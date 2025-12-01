@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Navbar from "../components/Navbar";
-import { FaClock, FaHandsWash, FaPray, FaBookOpen, FaMapMarkerAlt, FaExclamationTriangle, FaArrowLeft, FaChevronLeft, FaChevronRight, FaCalendarAlt } from 'react-icons/fa';
+import { FaClock, FaHandsWash, FaPray, FaBookOpen, FaMapMarkerAlt, FaExclamationTriangle, FaArrowLeft, FaChevronLeft, FaChevronRight, FaCalendarAlt, FaBell, FaBellSlash } from 'react-icons/fa';
 import './Prayer.css';
 import './emotionbase.css'; // Import for MUHAMMADIBOLD font
 import { format, addDays, startOfWeek } from "date-fns";
 import { getPrayerTimes, reverseGeocode } from '../apis/prayerService';
 import PrayerSectionService from '../apis/prayerSectionService';
+import prayerNotificationService from '../apis/notificationService';
 import Footer from "../components/Footer";
 import CityPrayerSearch from "../components/citySearch";
 import PrayerTimesModal from "../components/modalComponent";
@@ -313,12 +314,12 @@ const prayerTopics = {
         source: "Hadith"
       },
       {
-        name: "Salawat (Sending blessings on the Prophet)",
-        nameAr: "الصَّلَاةُ عَلَى النَّبِيِّ",
-        nameUrdu: "نبی پر درود",
-        arabic: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ",
-        translation: "O Allah, send prayers upon Muhammad and the family of Muhammad, as You sent prayers upon Ibrahim and the family of Ibrahim. Verily, You are Praiseworthy and Glorious.",
-        translationUrdu: "اے اللہ، محمد اور آل محمد پر رحمت بھیج جیسا کہ تو نے ابراہیم اور آل ابراہیم پر رحمت بھیجی۔ بے شک تو قابل تعریف اور بزرگ ہے۔",
+        name: "Salawat (Durood-e-Ibrahimi)",
+        nameAr: "الصَّلَاةُ الإِبْرَاهِيمِيَّة",
+        nameUrdu: "درود ابراہیمی",
+        arabic: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ. اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ",
+        translation: "O Allah, send prayers upon Muhammad and upon the family of Muhammad, as You sent prayers upon Ibrahim and upon the family of Ibrahim. Indeed, You are Praiseworthy and Glorious. O Allah, bless Muhammad and the family of Muhammad, as You blessed Ibrahim and the family of Ibrahim. Indeed, You are Praiseworthy and Glorious.",
+        translationUrdu: "اے اللہ، محمد اور آل محمد پر درود بھیج جیسا کہ تو نے ابراہیم اور آل ابراہیم پر درود بھیجا ہے۔ بے شک تو قابل تعریف اور بزرگ ہے۔ اے اللہ، محمد اور آل محمد کو برکت دے جیسا کہ تو نے ابراہیم اور آل ابراہیم کو برکت دی ہے۔ بے شک تو قابل تعریف اور بزرگ ہے۔",
         reference: "Sahih al-Bukhari 3370",
         source: "Hadith"
       },
@@ -387,6 +388,64 @@ const Prayer = () => {
 
   // Modal state for prayer times modal
   const [modalData, setModalData] = useState(null);
+
+  // Notification state
+  const [notificationsEnabled, setNotificationsEnabled] = useState(prayerNotificationService.isEnabled);
+  const [notificationPermission, setNotificationPermission] = useState('default');
+  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
+  const [notifyBeforeMinutes, setNotifyBeforeMinutes] = useState(prayerNotificationService.notifyBeforeMinutes);
+
+  // Initialize notifications
+  useEffect(() => {
+    const initNotifications = async () => {
+      const isAvailable = await prayerNotificationService.init();
+      setNotificationPermission(prayerNotificationService.notificationPermission);
+      setNotificationsEnabled(prayerNotificationService.isEnabled);
+    };
+    initNotifications();
+  }, []);
+
+  // Update notification service when prayer times change
+  useEffect(() => {
+    if (prayerTimes && prayerTimes.length > 0) {
+      // Convert array format to object format for notification service
+      const timesObj = {};
+      prayerTimes.forEach(prayer => {
+        timesObj[prayer.name] = prayer.time;
+      });
+      prayerNotificationService.setPrayerTimes(timesObj);
+      
+      // Start checking if notifications are enabled
+      if (notificationsEnabled) {
+        prayerNotificationService.startChecking();
+      }
+    }
+    
+    return () => {
+      prayerNotificationService.stopChecking();
+    };
+  }, [prayerTimes, notificationsEnabled]);
+
+  // Toggle notifications
+  const handleToggleNotifications = async () => {
+    if (notificationPermission !== 'granted') {
+      const permission = await prayerNotificationService.requestPermission();
+      setNotificationPermission(permission);
+      if (permission !== 'granted') {
+        alert('Please allow notifications in your browser settings to receive prayer time alerts.');
+        return;
+      }
+    }
+    
+    const isEnabled = await prayerNotificationService.toggle();
+    setNotificationsEnabled(isEnabled);
+  };
+
+  // Update notification timing
+  const handleNotifyBeforeChange = async (minutes) => {
+    setNotifyBeforeMinutes(minutes);
+    await prayerNotificationService.setNotifyBeforeMinutes(minutes);
+  };
 
   // Load prayer records from API
   const loadPrayerRecords = async (date = selectedDate) => {
@@ -602,8 +661,80 @@ const Prayer = () => {
               )}
             </div>
 
-            <div className="city-search-wrapper">
-              <CityPrayerSearch onShowPrayerTimes={handleShowPrayerTimes} />
+            <div className="flex items-center gap-3">
+              {/* Notification Toggle */}
+              <div className="relative flex items-center">
+                <button
+                  onClick={handleToggleNotifications}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold transition-all duration-300 shadow-lg ${
+                    notificationsEnabled
+                      ? 'bg-[#055160] text-white hover:bg-[#033642]'
+                      : 'bg-[#9ca3af] text-white hover:bg-[#6b7280]'
+                  }`}
+                  title={notificationsEnabled ? 'Notifications enabled' : 'Enable notifications'}
+                >
+                  {notificationsEnabled ? (
+                    <>
+                      <FaBell className="text-[#e0c33e]" />
+                      <span className="sm:inline">Alerts On</span>
+                    </>
+                  ) : (
+                    <>
+                      <FaBellSlash />
+                      <span className="sm:inline">Alerts Off</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Notification Settings Button */}
+                {notificationsEnabled && (
+                  <button
+                    onClick={() => setShowNotificationSettings(!showNotificationSettings)}
+                    className="ml-2 w-9 h-9 flex items-center justify-center text-[#055160] hover:text-[#e0c33e] transition-colors"
+                    title="Notification settings"
+                  >
+                    ⚙️
+                  </button>
+                )}
+
+                {showNotificationSettings && (
+                  <div className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-xl p-4 z-50 min-w-[250px] border border-gray-100">
+                    <h4 className="font-bold text-[#055160] mb-3">Notification Settings</h4>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm text-gray-600 block mb-1">Notify me before prayer:</label>
+                        <select
+                          value={notifyBeforeMinutes}
+                          onChange={(e) => handleNotifyBeforeChange(parseInt(e.target.value))}
+                          className="w-full p-2 border border-gray-200 rounded-lg focus:border-[#e0c33e] outline-none"
+                        >
+                          <option value={0}>At exact time only</option>
+                          <option value={5}>5 minutes before</option>
+                          <option value={10}>10 minutes before</option>
+                          <option value={15}>15 minutes before</option>
+                          <option value={30}>30 minutes before</option>
+                        </select>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        You'll receive a notification at the exact prayer time{notifyBeforeMinutes > 0 ? ` and ${notifyBeforeMinutes} minutes before` : ''}.
+                      </p>
+                      <p className="text-xs text-green-600 mt-2 font-medium">
+                        ✓ Background notifications enabled - works even when browser is closed!
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setShowNotificationSettings(false)}
+                      className="mt-3 w-full py-2 bg-[#055160] text-white rounded-lg hover:bg-[#033642] transition-colors"
+                    >
+                      Done
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="city-search-wrapper">
+                <CityPrayerSearch onShowPrayerTimes={handleShowPrayerTimes} />
+              </div>
             </div>
           </div>
         </div>

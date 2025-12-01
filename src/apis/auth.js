@@ -3,6 +3,9 @@ import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000';
 const API_URL = `${API_BASE_URL}/auth`;
 
+console.log('API_BASE_URL:', API_BASE_URL);
+console.log('API_URL:', API_URL);
+
 // Create axios instance with default config
 const api = axios.create({
   baseURL: API_URL,
@@ -13,12 +16,25 @@ const api = axios.create({
 
 // Add token to requests if it exists
 api.interceptors.request.use((config) => {
+  console.log('Making request to:', config.baseURL + config.url);
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
+
+// Add response interceptor for debugging
+api.interceptors.response.use(
+  (response) => {
+    console.log('Response received:', response);
+    return response;
+  },
+  (error) => {
+    console.error('API Error:', error);
+    return Promise.reject(error);
+  }
+);
 
 const AuthService = {
   // Register new user
@@ -158,6 +174,108 @@ const AuthService = {
   resendVerificationCode: async (email) => {
     try {
       const response = await api.post('/resend-verification-code', { email });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Change Password
+  changePassword: async ({ currentPassword, newPassword, confirmNewPassword }) => {
+    try {
+      const response = await api.post('/change-password', {
+        currentPassword,
+        newPassword,
+        confirmNewPassword
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Add Secondary Email
+  addSecondaryEmail: async (email) => {
+    try {
+      const response = await api.post('/secondary-email', { email });
+      if (response.data?.data?.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Verify Secondary Email
+  verifySecondaryEmail: async ({ email, verificationCode }) => {
+    try {
+      const response = await api.post('/secondary-email/verify', {
+        email,
+        verificationCode
+      });
+      if (response.data?.data?.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Remove Secondary Email
+  removeSecondaryEmail: async (email) => {
+    try {
+      const response = await api.delete('/secondary-email', { data: { email } });
+      if (response.data?.data?.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Resend Secondary Email Verification Code
+  resendSecondaryEmailCode: async (email) => {
+    try {
+      const response = await api.post('/secondary-email/resend-code', { email });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Send Phone Verification Code
+  sendPhoneVerificationCode: async (phone, countryCode) => {
+    try {
+      const response = await api.post('/phone/send-code', { phone, countryCode });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Verify Phone Number
+  verifyPhoneNumber: async (verificationCode) => {
+    try {
+      const response = await api.post('/phone/verify', { verificationCode });
+      if (response.data?.data?.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Remove Phone Number
+  removePhoneNumber: async () => {
+    try {
+      const response = await api.delete('/phone');
+      if (response.data?.data?.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+      }
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

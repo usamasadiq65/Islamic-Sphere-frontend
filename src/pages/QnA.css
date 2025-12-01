@@ -55,21 +55,26 @@
   text-align: center;
 }
 
-/* .no-sessions-message{
-
-text-align: center;
-
+/* No Sessions Message */
+.no-sessions-message {
+  text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
- .no-message{
+
+.no-message {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   text-align: center;
- } */
+  width: 100%;
+  padding: 2rem;
+  color: #555;
+  font-size: 1.1rem;
+}
 
 /* Hero Section */
 .qna-hero {
@@ -829,25 +834,20 @@ text-align: center;
 }
 
 .section-badge {
-  /* display: inline-block; */
-
-/* margin-left: 530px; */
-margin-left: auto;
-margin-right: auto ;
-text-align: center;
-  height: 30px;
-  width: 100px;
-  background: var(--gold-gradient);
-  /* display: flex; */
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
   background: var(--accent-color);
   color: var(--text-dark);
   font-size: 0.8rem;
   font-weight: 700;
-  padding: 0.3rem 0.8rem;
+  padding: 0.4rem 1rem;
   border-radius: 20px;
   margin-bottom: 1rem;
   letter-spacing: 1px;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .featured-sessions-container {
@@ -1853,5 +1853,665 @@ text-align: center;
     align-self: flex-end;
     font-size: 0.75rem;
     padding: 0.3rem 0.6rem;
+  }
+}
+
+/* Add Session Button for Scholars */
+.add-session-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: var(--gold-gradient);
+  color: #2c3e50;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(224, 195, 62, 0.4);
+  margin: 0 auto 2.5rem auto;
+}
+
+.add-session-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(224, 195, 62, 0.5);
+}
+
+.add-session-btn:active {
+  transform: translateY(-1px);
+}
+
+/* Sessions Tabs Section */
+.sessions-tabs-section {
+  padding: 1rem 0 4rem;
+  background: #ffffff;
+}
+
+/* Sessions Section Header */
+.sessions-section-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.sessions-section-header .section-badge {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sessions-section-header .section-title {
+  font-size: 2.5rem;
+  color: #055160;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sessions-section-header .section-subtitle {
+  font-size: 1.1rem;
+  color: #6c757d;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.sessions-tabs-header {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.session-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.session-tab:hover {
+  border-color: #055160;
+  color: #055160;
+}
+
+.session-tab.active {
+  background: linear-gradient(135deg, #e0c33e, #f1d87a);
+  border-color: #e0c33e;
+  color: #2c3e50;
+  box-shadow: 0 4px 15px rgba(224, 195, 62, 0.4);
+}
+
+.session-tab svg {
+  font-size: 1.1rem;
+}
+
+.sessions-tabs-content {
+  min-height: 300px;
+}
+
+.tab-panel {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Session Search Bar */
+.session-search-bar {
+  display: flex;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto 2rem auto;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 50px;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.session-search-bar:focus-within {
+  border-color: #055160;
+  box-shadow: 0 0 0 3px rgba(5, 81, 96, 0.1);
+}
+
+.session-search-bar .search-icon {
+  color: #999;
+  font-size: 1rem;
+  margin-right: 0.75rem;
+}
+
+.session-search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: #2c3e50;
+  background: transparent;
+}
+
+.session-search-bar input::placeholder {
+  color: #999;
+}
+
+.session-search-bar .clear-search {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.session-search-bar .clear-search:hover {
+  color: #e74c3c;
+}
+
+/* Responsive Tabs */
+@media (max-width: 600px) {
+  .sessions-tabs-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .session-tab {
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+  }
+
+  .session-search-bar {
+    margin: 0 1rem 2rem 1rem;
+    max-width: none;
+  }
+}
+
+/* Session Modal Overlay */
+.session-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  backdrop-filter: blur(5px);
+}
+
+/* Session Modal */
+.session-modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 550px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.session-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  /* background: linear-gradient(135deg, #055160, #0a7b8a); */
+  background: var(--royal-gradient);
+  color: white;
+  border-radius: 16px 16px 0 0;
+}
+
+.session-modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.close-modal-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-modal-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+/* Session Modal Form */
+.session-modal-form {
+  padding: 1.5rem;
+}
+
+.session-modal-form .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.session-modal-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.session-modal-form input,
+.session-modal-form select,
+.session-modal-form textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+/* Custom Scholar Dropdown */
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #f8f9fa;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.custom-select-trigger:hover {
+  border-color: #055160;
+}
+
+.custom-select-trigger.open {
+  border-color: #055160;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(5, 81, 96, 0.1);
+}
+
+.custom-select-arrow {
+  font-size: 0.7rem;
+  color: #666;
+  transition: transform 0.3s ease;
+}
+
+.custom-select-trigger.open .custom-select-arrow {
+  transform: rotate(180deg);
+}
+
+.custom-select-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.custom-select-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #2c3e50;
+}
+
+.custom-select-option:hover {
+  /* background: linear-gradient(135deg, #e0c33e, #f1d87a); */
+  background: var(--royal-gradient);
+  color: white;
+}
+
+.custom-select-option.selected {
+  /* background: linear-gradient(135deg, #e0c33e, #f1d87a); */
+  background: var(--royal-gradient);
+  color: white;
+  font-weight: 600;
+}
+
+.session-modal-form input:focus,
+.session-modal-form select:focus,
+.session-modal-form textarea:focus {
+  outline: none;
+  border-color: #055160;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(5, 81, 96, 0.1);
+}
+
+.session-modal-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.session-modal-form .form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.session-modal-form .form-row .form-group {
+  flex: 1;
+}
+
+/* Session Modal Actions */
+.session-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.session-modal-actions .cancel-btn {
+  padding: 0.75rem 1.5rem;
+  background: #f0f0f0;
+  color: #555;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.session-modal-actions .cancel-btn:hover {
+  background: #e0e0e0;
+}
+
+.session-modal-actions .submit-btn {
+  padding: 0.75rem 1.5rem;
+  /* background: linear-gradient(135deg, #055160, #0a7b8a); */
+  background: var(--royal-gradient);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.session-modal-actions .submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(5, 81, 96, 0.3);
+}
+
+.session-modal-actions .submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments for session modal */
+@media (max-width: 576px) {
+  .session-modal {
+    max-height: 95vh;
+    border-radius: 12px;
+  }
+
+  .session-modal-header {
+    padding: 1rem;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .session-modal-form {
+    padding: 1rem;
+  }
+
+  .session-modal-form .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .session-modal-actions {
+    flex-direction: column;
+  }
+
+  .session-modal-actions .cancel-btn,
+  .session-modal-actions .submit-btn {
+    width: 100%;
+  }
+}
+
+/* Scholar Info Display (for scholar users creating sessions) */
+.scholar-info-display {
+  margin-top: 0.5rem;
+}
+
+.scholar-info-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px solid #055160;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(5, 81, 96, 0.1);
+}
+
+.scholar-info-card .scholar-icon {
+  font-size: 1.5rem;
+  color: #055160;
+}
+
+.scholar-info-card .scholar-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  flex: 1;
+}
+
+.scholar-info-card .scholar-badge {
+  background: linear-gradient(135deg, #e0c33e, #f1d87a);
+  color: #2c3e50;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Scholar Not Found Warning */
+.scholar-not-found-warning {
+  padding: 1rem;
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  color: #856404;
+  margin-top: 0.5rem;
+}
+
+.scholar-not-found-warning p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.scholar-not-found-warning .small-text {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+}
+
+/* Session Card Action Icons (Top-right Edit/Delete) */
+.session-card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.card-action-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-action-icon.edit-icon {
+  background: linear-gradient(135deg, #e0c33e, #f1d87a);
+  color: #2c3e50;
+}
+
+.card-action-icon.edit-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(224, 195, 62, 0.5);
+}
+
+.card-action-icon.delete-icon {
+  background: linear-gradient(135deg, #dc3545, #ff6b6b);
+  color: white;
+}
+
+.card-action-icon.delete-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.5);
+}
+
+/* View Button at top-left */
+.session-card-view {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
+
+.card-action-icon.view-icon {
+  background: linear-gradient(135deg, #1a5f4a, #2d8a6e);
+  color: white;
+}
+
+.card-action-icon.view-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(26, 95, 74, 0.5);
+}
+
+/* Make sure the card has position relative for absolute positioning */
+.featured-session-card {
+  position: relative;
+}
+
+/* Session Action Buttons (Edit/Delete) - Old style, keeping for backwards compatibility */
+.session-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(5, 81, 96, 0.1);
+}
+
+.session-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.session-action-btn.edit-btn {
+  background: linear-gradient(135deg, #e0c33e, #f1d87a);
+  color: #2c3e50;
+}
+
+.session-action-btn.edit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(224, 195, 62, 0.4);
+}
+
+.session-action-btn.delete-btn {
+  background: linear-gradient(135deg, #dc3545, #ff6b6b);
+  color: white;
+}
+
+.session-action-btn.delete-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+.session-action-btn svg {
+  font-size: 0.9rem;
+}
+
+/* Responsive for session actions */
+@media (max-width: 576px) {
+  .session-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .session-action-btn {
+    justify-content: center;
+    width: 100%;
   }
 }

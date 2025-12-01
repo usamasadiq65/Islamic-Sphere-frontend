@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000';
-const API_URL = `${API_BASE_URL}/scholars`; // Adjust if your backend runs on a different port
+const API_URL = `${API_BASE_URL}/scholars`; // Old scholars collection endpoint (for backward compatibility)
+const AUTH_API_URL = `${API_BASE_URL}/auth`; // New endpoint for user-based scholars
 
 const api = axios.create({
   baseURL: API_URL,
@@ -10,11 +11,19 @@ const api = axios.create({
   },
 });
 
+const authApi = axios.create({
+  baseURL: AUTH_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 const ScholarService = {
-  // Get all scholars
+  // Get all scholars (users with role 'scholar')
   getScholars: async () => {
     try {
-      const response = await api.get('/');
+      // Fetch scholars from the new user-based endpoint
+      const response = await authApi.get('/scholars');
       return {
         success: response.data.success,
         data: response.data.data,
@@ -29,7 +38,20 @@ const ScholarService = {
       };
     }
   },
-  // Get a scholar by ID
+  
+  // Get scholar count
+  getScholarCount: async () => {
+    try {
+      const response = await authApi.get('/scholars');
+      return response.data.data?.length || 0;
+    } catch (error) {
+      console.error('Error fetching scholar count:', error);
+      return 0;
+    }
+  },
+
+  // Legacy methods for backward compatibility with old ScholarSession collection
+  // Get a scholar by ID (old ScholarSession)
   getScholarById: async (id) => {
     try {
       const response = await api.get(`/${id}`);
@@ -47,7 +69,7 @@ const ScholarService = {
       };
     }
   },
-  // Create a new scholar
+  // Create a new scholar (old ScholarSession - for admin panel)
   createScholar: async (scholarData) => {
     try {
       const response = await api.post('/', scholarData);
@@ -65,7 +87,7 @@ const ScholarService = {
       };
     }
   },
-  // Update a scholar
+  // Update a scholar (old ScholarSession - for admin panel)
   updateScholar: async (id, scholarData) => {
     try {
       const response = await api.put(`/${id}`, scholarData);
@@ -83,7 +105,7 @@ const ScholarService = {
       };
     }
   },
-  // Delete a scholar
+  // Delete a scholar (old ScholarSession - for admin panel)
   deleteScholar: async (id) => {
     try {
       const response = await api.delete(`/${id}`);
@@ -98,12 +120,7 @@ const ScholarService = {
         message: error.response?.data?.message || 'Failed to delete scholar'
       };
     }
-  },
-  // Fetch scholar count
-  getScholarCount: async () => {
-    const response = await api.get('/count');
-    return response.data.count;
-  },
+  }
 };
 
 export default ScholarService;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import { toast } from 'react-toastify';
-import { FaCalendarAlt, FaClock, FaUserAlt, FaVideo, FaMapMarkerAlt, FaUsers, FaStar, FaRegClock, FaChalkboardTeacher, FaUserTie, FaQuestionCircle, FaFacebookF, FaTwitter, FaInstagram, FaYoutube, FaStarAndCrescent, FaSearch } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaUserAlt, FaVideo, FaMapMarkerAlt, FaUsers, FaStar, FaRegClock, FaChalkboardTeacher, FaUserTie, FaQuestionCircle, FaFacebookF, FaTwitter, FaInstagram, FaYoutube, FaStarAndCrescent, FaSearch, FaPlus, FaTimes, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
 import './QnA.css';
 import SessionService from '../apis/session';
@@ -12,8 +12,8 @@ import './Home.css'; // Import the Home.css file for footer styling
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 
-const DEFAULT_SESSION_IMAGE = '/images/default-session.jpg';  // Add this image to your public folder
-const DEFAULT_SCHOLAR_IMAGE = '/images/default-scholar.jpg';  // Add this image to your public folder
+const DEFAULT_SESSION_IMAGE = '/images/1.jpg';  // Using existing image
+const DEFAULT_SCHOLAR_IMAGE = '/images/1.jpg';  // Using existing image
 
 const QnA = () => {
 
@@ -34,19 +34,121 @@ const QnA = () => {
   const [featuredSessions, setFeaturedSessions] = useState([]);
   const [scholarSearchQuery, setScholarSearchQuery] = useState('');
 
+  // Session Tabs State
+  const [activeSessionTab, setActiveSessionTab] = useState('today'); // 'today', 'upcoming', or 'mysessions'
+  const [todaySessionSearch, setTodaySessionSearch] = useState('');
+  const [upcomingSessionSearch, setUpcomingSessionSearch] = useState('');
+  const [mySessionSearch, setMySessionSearch] = useState(''); // Search for My Sessions tab
+
+  // Session Modal State (for scholars)
+  const [showSessionModal, setShowSessionModal] = useState(false);
+  const [sessionLoading, setSessionLoading] = useState(false);
+  const [sessionFormData, setSessionFormData] = useState({
+    title: '',
+    description: '',
+    date: '',
+    startTime: '',
+    endTime: '',
+    zoomLink: '',
+    meetingPlatform: 'zoom',
+    scholarUserId: '',
+    scholarName: ''
+  });
+
+  // Edit Session State
+  const [isEditingSession, setIsEditingSession] = useState(false);
+  const [editingSessionId, setEditingSessionId] = useState(null);
+
+  // Custom Scholar Dropdown State
+  const [showScholarDropdown, setShowScholarDropdown] = useState(false);
+
   // Format date to display in a more readable format
 
   const navigate = useNavigate();
 
 
   const formatDate = (dateString) => {
+    // Parse the date string manually to avoid timezone issues
+    // dateString format: "YYYY-MM-DD"
+    const parts = dateString?.split('-').map(Number);
+    if (parts && parts.length === 3) {
+      const date = new Date(parts[0], parts[1] - 1, parts[2]); // month is 0-indexed
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    }
+    // Fallback for other date formats
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
+  };
+
+  // Helper function to get proper image URL (handles base64, full URLs, and file paths)
+  const getScholarImageUrl = (imagePath) => {
+    const BASE_URL = 'https://islamic-sphere-backend-two.vercel.app/uploads/';
+    
+    if (!imagePath || typeof imagePath !== 'string' || imagePath.length < 5) {
+      return DEFAULT_SCHOLAR_IMAGE;
+    }
+    // Check if it's already a full URL or base64
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+      return imagePath;
+    }
+    // Check if it's a valid filename (not garbage)
+    if (imagePath.includes('==') || imagePath.length > 500) {
+      return DEFAULT_SCHOLAR_IMAGE;
+    }
+    // Assume it's a file path
+    return `${BASE_URL}${imagePath}`;
   };
 
   // Get scholar by ID
   const getScholarById = (id) => {
     return scholars.find(scholar => scholar._id === id);
+  };
+
+  // Helper function to get scholar info from session (supports both ScholarSession and User-based scholars)
+  const getSessionScholarInfo = (session) => {
+    const BASE_URL = 'https://islamic-sphere-backend-two.vercel.app/uploads/';
+    
+    // Helper to validate image path
+    const getValidImageUrl = (imagePath) => {
+      if (!imagePath || typeof imagePath !== 'string' || imagePath.length < 5) {
+        return DEFAULT_SCHOLAR_IMAGE;
+      }
+      // Check if it's already a full URL or base64
+      if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
+        return imagePath;
+      }
+      // Check if it's a valid filename (not garbage data)
+      if (imagePath.includes('==') || imagePath.length > 500) {
+        return DEFAULT_SCHOLAR_IMAGE;
+      }
+      return `${BASE_URL}${imagePath}`;
+    };
+
+    // First check if session has a populated scholarSession (from ScholarSession collection)
+    if (session.scholarSession?.name) {
+      return {
+        name: session.scholarSession.name,
+        image: getValidImageUrl(session.scholarSession.image)
+      };
+    }
+    // Then check if it has scholarName (direct field for user-based scholars)
+    if (session.scholarName) {
+      return {
+        name: session.scholarName,
+        image: getValidImageUrl(session.scholarUserId?.image)
+      };
+    }
+    // Check populated scholarUserId
+    if (session.scholarUserId) {
+      const fullName = `${session.scholarUserId.firstName || ''} ${session.scholarUserId.lastName || ''}`.trim();
+      return {
+        name: fullName || session.scholarUserId.username || 'Scholar',
+        image: getValidImageUrl(session.scholarUserId.image)
+      };
+    }
+    // Fallback
+    return { name: 'Scholar', image: DEFAULT_SCHOLAR_IMAGE };
   };
 
   // Filter sessions by scholar ID
@@ -99,6 +201,225 @@ const QnA = () => {
     }
   };
 
+  // Session Modal Handlers (for scholars)
+  const handleOpenSessionModal = () => {
+    // For scholar users, use their own user ID and name
+    const scholarName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || user?.username || '';
+    
+    setSessionFormData({
+      title: '',
+      description: '',
+      date: '',
+      startTime: '',
+      endTime: '',
+      zoomLink: '',
+      meetingPlatform: 'zoom',
+      scholarUserId: user?._id || user?.id || '',
+      scholarName: scholarName
+    });
+    setShowSessionModal(true);
+  };
+
+  const handleCloseSessionModal = () => {
+    setShowSessionModal(false);
+    setIsEditingSession(false);
+    setEditingSessionId(null);
+    setSessionFormData({
+      title: '',
+      description: '',
+      date: '',
+      startTime: '',
+      endTime: '',
+      zoomLink: '',
+      meetingPlatform: 'zoom',
+      scholarUserId: '',
+      scholarName: ''
+    });
+    setShowScholarDropdown(false);
+  };
+
+  // Handle Edit Session - Open modal with session data
+  const handleEditSession = (session) => {
+    setSessionFormData({
+      title: session.title || session.name || '',
+      description: session.description || '',
+      date: session.date || '',
+      startTime: session.startTime || '',
+      endTime: session.endTime || '',
+      zoomLink: session.zoomLink || '',
+      meetingPlatform: session.meetingPlatform || 'zoom',
+      scholarUserId: session.scholarUserId?._id || session.scholarUserId || user?._id || user?.id || '',
+      scholarName: session.scholarName || `${user?.firstName} ${user?.lastName}`.trim() || user?.username
+    });
+    setEditingSessionId(session._id);
+    setIsEditingSession(true);
+    setShowSessionModal(true);
+  };
+
+  // Handle Delete Session
+  const handleDeleteSession = async (sessionId, sessionTitle) => {
+    if (!window.confirm(`Are you sure you want to delete the session "${sessionTitle}"?`)) {
+      return;
+    }
+
+    try {
+      const response = await SessionService.deleteSession(sessionId);
+      if (response.success) {
+        toast.success('Session deleted successfully');
+        // Refresh sessions list
+        const sessionsResponse = await SessionService.getSessions();
+        if (sessionsResponse.success) {
+          setSessions(sessionsResponse.data || []);
+          setFeaturedSessions(sessionsResponse.data?.slice(0, 3) || []);
+        }
+      } else {
+        toast.error(response.message || 'Failed to delete session');
+      }
+    } catch (error) {
+      toast.error('Failed to delete session');
+      console.error('Delete session error:', error);
+    }
+  };
+
+  // Check if user can edit/delete a session
+  const canManageSession = (session) => {
+    if (!user) return false;
+    if (user.role === 'admin') return true;
+    if (user.role === 'scholar') {
+      // Scholar can manage their own sessions
+      const userId = user._id || user.id;
+      return session.scholarUserId === userId || 
+             session.scholarUserId?._id === userId ||
+             session.scholarName === `${user.firstName} ${user.lastName}`.trim() ||
+             session.scholarName === user.username;
+    }
+    return false;
+  };
+
+  const handleSessionFormChange = (e) => {
+    const { name, value } = e.target;
+    setSessionFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle custom scholar dropdown selection
+  const handleScholarSelect = (scholarId) => {
+    setSessionFormData(prev => ({
+      ...prev,
+      scholarSession: scholarId
+    }));
+    setShowScholarDropdown(false);
+  };
+
+  // Get selected scholar name
+  const getSelectedScholarName = () => {
+    if (!sessionFormData.scholarSession) return '-- Select Scholar --';
+    const scholar = scholars.find(s => s._id === sessionFormData.scholarSession);
+    return scholar ? scholar.name : '-- Select Scholar --';
+  };
+
+  const validateSessionForm = () => {
+    if (!sessionFormData.title.trim()) {
+      toast.error('Please enter a session title');
+      return false;
+    }
+    if (!sessionFormData.description.trim()) {
+      toast.error('Please enter a session description');
+      return false;
+    }
+    if (!sessionFormData.date) {
+      toast.error('Please select a date');
+      return false;
+    }
+    if (!sessionFormData.startTime) {
+      toast.error('Please select a start time');
+      return false;
+    }
+    if (!sessionFormData.endTime) {
+      toast.error('Please select an end time');
+      return false;
+    }
+    if (!sessionFormData.zoomLink.trim()) {
+      toast.error('Please enter a meeting link');
+      return false;
+    }
+
+    // Check if date is in the past (allow today)
+    // Parse the date string manually to avoid timezone issues
+    const [year, month, day] = sessionFormData.date.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day); // month is 0-indexed
+    selectedDate.setHours(0, 0, 0, 0);
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (selectedDate < today) {
+      toast.error('Please select today or a future date');
+      return false;
+    }
+
+    // Check if end time is after start time
+    const [startHours, startMinutes] = sessionFormData.startTime.split(':').map(Number);
+    const [endHours, endMinutes] = sessionFormData.endTime.split(':').map(Number);
+    if (endHours < startHours || (endHours === startHours && endMinutes <= startMinutes)) {
+      toast.error('End time must be after start time');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleCreateSession = async (e) => {
+    e.preventDefault();
+    
+    if (!validateSessionForm()) return;
+
+    try {
+      setSessionLoading(true);
+      const sessionData = {
+        ...sessionFormData,
+        name: sessionFormData.title
+      };
+      
+      let response;
+      
+      if (isEditingSession && editingSessionId) {
+        // Update existing session
+        console.log('Updating session with data:', sessionData);
+        response = await SessionService.updateSession(editingSessionId, sessionData);
+        console.log('Session update response:', response);
+        
+        if (response.success) {
+          toast.success('Session updated successfully!');
+          handleCloseSessionModal();
+          fetchData(); // Refresh the data
+        } else {
+          toast.error(response.message || 'Failed to update session');
+        }
+      } else {
+        // Create new session
+        console.log('Creating session with data:', sessionData);
+        response = await SessionService.createSession(sessionData);
+        console.log('Session creation response:', response);
+        
+        if (response.success) {
+          toast.success('Session created successfully!');
+          handleCloseSessionModal();
+          fetchData(); // Refresh the data
+        } else {
+          toast.error(response.message || 'Failed to create session');
+        }
+      }
+    } catch (error) {
+      console.error('Error saving session:', error);
+      toast.error(isEditingSession ? 'Failed to update session' : 'Failed to create session');
+    } finally {
+      setSessionLoading(false);
+    }
+  };
+
   // Fetch both scholars and sessions data
   const fetchData = async () => {
     setLoading(true);
@@ -115,6 +436,7 @@ const QnA = () => {
 
       // Fetch sessions
       const sessionsResponse = await SessionService.getSessions();
+      console.log('Fetched sessions:', sessionsResponse.data);
       if (sessionsResponse.success) {
         setSessions(sessionsResponse.data);
         // Filter featured sessions
@@ -158,10 +480,19 @@ const QnA = () => {
     }
   };
 
- 
+  // Helper to create datetime from date and time strings without timezone issues
+  const createDateTime = (dateStr, timeStr) => {
+    const dateParts = dateStr?.split('-').map(Number);
+    const [hours, minutes] = timeStr?.split(':').map(Number) || [0, 0];
+    if (dateParts && dateParts.length === 3) {
+      return new Date(dateParts[0], dateParts[1] - 1, dateParts[2], hours, minutes);
+    }
+    return new Date(`${dateStr}T${timeStr}`);
+  };
+
   const isSessionLive = (date, startTime, endTime) => {
-    const sessionStartDateTime = new Date(`${date}T${startTime}`);
-    const sessionEndDateTime = new Date(`${date}T${endTime}`);
+    const sessionStartDateTime = createDateTime(date, startTime);
+    const sessionEndDateTime = createDateTime(date, endTime);
     const now = new Date();
     return now >= sessionStartDateTime && now <= sessionEndDateTime;
   };
@@ -173,14 +504,14 @@ const QnA = () => {
 
   // Check if a session has already ended
   const isPastSession = (date, endTime) => {
-    const sessionEndDateTime = new Date(`${date}T${endTime}`);
+    const sessionEndDateTime = createDateTime(date, endTime);
     const now = new Date();
     return now > sessionEndDateTime;
   };
 
   // Check if a session is upcoming (not started yet)
   const isUpcomingSession = (date, startTime) => {
-    const sessionStartDateTime = new Date(`${date}T${startTime}`);
+    const sessionStartDateTime = createDateTime(date, startTime);
     const now = new Date();
     return now < sessionStartDateTime;
   };
@@ -194,19 +525,28 @@ const QnA = () => {
     return `${formattedHour}:${minutes} ${ampm}`;
   };
 
+  // Helper to parse date string without timezone issues
+  const parseDateString = (dateString) => {
+    const parts = dateString?.split('-').map(Number);
+    if (parts && parts.length === 3) {
+      return new Date(parts[0], parts[1] - 1, parts[2]); // month is 0-indexed
+    }
+    return new Date(dateString);
+  };
+
   // Get month from date string
   const getMonthFromDate = (dateString) => {
-    return new Date(dateString).toLocaleString('default', { month: 'short' });
+    return parseDateString(dateString).toLocaleString('default', { month: 'short' });
   };
 
   // Get day from date string
   const getDayFromDate = (dateString) => {
-    return new Date(dateString).getDate();
+    return parseDateString(dateString).getDate();
   };
 
   // Calculate time remaining until session
   const getTimeUntilSession = (date, startTime) => {
-    const sessionDateTime = new Date(`${date}T${startTime}`);
+    const sessionDateTime = createDateTime(date, startTime);
     const now = new Date();
     const diffMs = sessionDateTime - now;
 
@@ -388,7 +728,7 @@ const QnA = () => {
                   >
                     <div className="scholar-image">
                       <img 
-                        src={scholar.image ? `https://islamic-sphere-backend-two.vercel.app/uploads/${scholar.image}` : DEFAULT_SCHOLAR_IMAGE} 
+                        src={getScholarImageUrl(scholar.image)} 
                         alt={scholar.name} 
                         onError={(e) => {
                           e.target.onerror = null;
@@ -396,7 +736,7 @@ const QnA = () => {
                         }}
                       />
                       <div className="scholar-rating">
-                        <FaStar /> {scholar.rating}
+                        <FaStar /> {scholar.rating || 0}
                       </div>
                     </div>
                     <div className="scholar-info">
@@ -408,7 +748,7 @@ const QnA = () => {
                       <p 
                         className="scholar-specialty"
                         dangerouslySetInnerHTML={{
-                          __html: highlightSearchTerm(scholar.specialty, scholarSearchQuery)
+                          __html: highlightSearchTerm(scholar.specialty || 'Islamic Studies', scholarSearchQuery)
                         }}
                       />
                     </div>
@@ -434,7 +774,7 @@ const QnA = () => {
                   <div className="scholar-header">
                     <div className="scholar-large-image">
                       <img 
-                        src={activeScholar.image ? `https://islamic-sphere-backend-two.vercel.app/uploads/${activeScholar.image}` : DEFAULT_SCHOLAR_IMAGE} 
+                        src={getScholarImageUrl(activeScholar.image)} 
                         alt={activeScholar.name} 
                         onError={(e) => {
                           e.target.onerror = null;
@@ -444,16 +784,16 @@ const QnA = () => {
                     </div>
                     <div className="scholar-header-info">
                       <h2>{activeScholar.name}</h2>
-                      <p className="scholar-specialty">{activeScholar.specialty}</p>
+                      <p className="scholar-specialty">{activeScholar.specialty || 'Islamic Studies'}</p>
                       <div className="scholar-stats">
                         <div className="stat">
-                          <FaRegClock /> {activeScholar.sessions} Sessions
+                          <FaRegClock /> {activeScholar.sessions || 0} Sessions
                         </div>
                         <div className="stat">
-                          <FaUsers /> {activeScholar.students} Students
+                          <FaUsers /> {activeScholar.students || 0} Students
                         </div>
                         <div className="stat">
-                          <FaStar /> {activeScholar.rating} Rating
+                          <FaStar /> {activeScholar.rating || 0} Rating
                         </div>
                       </div>
                     </div>
@@ -461,21 +801,25 @@ const QnA = () => {
 
                   <div className="scholar-bio">
                     <h3>About</h3>
-                    <p>{activeScholar.bio}</p>
+                    <p>{activeScholar.bio || 'No bio available.'}</p>
                     <p className="scholar-availability">
-                      <FaCalendarAlt /> Available: {activeScholar.availability}
+                      <FaCalendarAlt /> Available: {activeScholar.availability || 'Contact for availability'}
                     </p>
                   </div>
                   <div className="mt-2 text-sm text-gray-700">
-                    <span className="font-semibold">Languages:</span> {activeScholar.languages?.join(', ')}
+                    <span className="font-semibold">Languages:</span> {activeScholar.languages?.join(', ') || 'Not specified'}
                   </div>
                   <div className="mt-2 text-sm text-gray-700">
                     <span className="font-semibold">Certifications:</span>
-                    <ul className="list-disc list-inside ml-2">
-                      {activeScholar.certifications?.map((cert, idx) => (
-                        <li key={idx}>{cert}</li>
-                      ))}
-                    </ul>
+                    {activeScholar.certifications?.length > 0 ? (
+                      <ul className="list-disc list-inside ml-2">
+                        {activeScholar.certifications.map((cert, idx) => (
+                          <li key={idx}>{cert}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <span> Not specified</span>
+                    )}
                   </div>
                 </div>
 
@@ -501,11 +845,11 @@ const QnA = () => {
             </div>
           ) : (
             featuredSessions.map(session => {
-              const scholar = getScholarById(session.scholarSession);
+              const scholarInfo = getSessionScholarInfo(session);
               return (
                 <div key={session._id} className="featured-session-card">
                   <div className="featured-session-image">
-                    <img src={scholar.image} alt={scholar.name} />
+                    <img src={scholarInfo.image} alt={scholarInfo.name} />
                     {isSessionLive(session.date, session.startTime) && (
                       <div className="featured-live-badge">LIVE NOW</div>
                     )}
@@ -513,7 +857,7 @@ const QnA = () => {
                   <div className="featured-session-content">
                     <h3>{session.topic}</h3>
                     <div className="featured-session-scholar">
-                      <span>{scholar.name}</span> | <span>{scholar.specialty}</span>
+                      <span>{scholarInfo.name}</span>
                     </div>
                     <p className="featured-session-description">{session.description}</p>
                     <div className="featured-session-details">
@@ -554,285 +898,754 @@ const QnA = () => {
         </div>
       </section>
 
-      {/* Today's Sessions and Upcoming Sessions sections */}
-      <div>
-        {/* Today's Featured Sessions */}
-        <div className="featured-sessions-section">
-          <div className="section-container">
-            <div className="section-badge">Today</div>
-            <h2 className="section-tot">Live & Today's Sessions</h2>
-            <p className="section-description">Join our live Q&A sessions happening today</p>
+      {/* Sessions Section with Tabs */}
+      <div className="sessions-tabs-section">
+        <div className="section-container">
+          {/* Section Header */}
+          <div className="sessions-section-header">
+            <div className="section-badge">Q&A Sessions</div>
+            <h2 className="section-title">Browse Sessions</h2>
+            <p className="section-subtitle">Join live Q&A sessions with renowned scholars or explore upcoming events</p>
+          </div>
 
-            <div className="featured-sessions-container">
-              {sessions.filter(session => {
-                const sessionDate = new Date(session.date);
-                const today = new Date();
-                
-                // Check if session is today
-                const isToday = (
-                  sessionDate.getDate() === today.getDate() &&
-                  sessionDate.getMonth() === today.getMonth() &&
-                  sessionDate.getFullYear() === today.getFullYear()
-                );
-                
-                // Only show today's sessions (including ended ones)
-                return isToday;
-              }).map(session => {
-                const isLive = isSessionLive(session.date, session.startTime, session.endTime);
-                const isReadyToJoin = isSessionReadyToJoin(session.date, session.startTime, session.endTime);
-                const isPast = isPastSession(session.date, session.endTime);
-                const isUpcoming = isUpcomingSession(session.date, session.startTime);
+          {/* Add Session Button for Scholars */}
+          {user && user.role === 'scholar' && (
+            <button
+              className="add-session-btn"
+              onClick={handleOpenSessionModal}
+            >
+              <FaPlus /> Add New Session
+            </button>
+          )}
 
-                // Get scholar data from the populated scholarSession
-                const scholar = session.scholarSession;
+          {/* Tabs Header */}
+          <div className="sessions-tabs-header">
+            <button
+              className={`session-tab ${activeSessionTab === 'today' ? 'active' : ''}`}
+              onClick={() => setActiveSessionTab('today')}
+            >
+              <FaCalendarAlt /> Live & Today's Sessions
+            </button>
+            <button
+              className={`session-tab ${activeSessionTab === 'upcoming' ? 'active' : ''}`}
+              onClick={() => setActiveSessionTab('upcoming')}
+            >
+              <FaRegClock /> Upcoming Sessions
+            </button>
+            {/* My Sessions tab - only visible for scholars */}
+            {user?.role === 'scholar' && (
+              <button
+                className={`session-tab ${activeSessionTab === 'mysessions' ? 'active' : ''}`}
+                onClick={() => setActiveSessionTab('mysessions')}
+              >
+                <FaUserAlt /> My Sessions
+              </button>
+            )}
+          </div>
 
-                // Use actual session and scholar data
-                const sessionImg = session.image || 'https://via.placeholder.com/400x200?text=Islamic+Session';
-                const scholarImg = scholar?.image ? `https://islamic-sphere-backend-two.vercel.app/uploads/${scholar.image}` : DEFAULT_SCHOLAR_IMAGE;
-                const scholarName = scholar?.name || 'Scholar';
+          {/* Tab Content */}
+          <div className="sessions-tabs-content">
+            {/* Today's Sessions Tab */}
+            {activeSessionTab === 'today' && (
+              <div className="tab-panel">
+                {/* Search Bar for Today's Sessions */}
+                <div className="session-search-bar">
+                  <FaSearch className="search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Search today's sessions by name..."
+                    value={todaySessionSearch}
+                    onChange={(e) => setTodaySessionSearch(e.target.value)}
+                  />
+                  {todaySessionSearch && (
+                    <button className="clear-search" onClick={() => setTodaySessionSearch('')}>
+                      <FaTimes />
+                    </button>
+                  )}
+                </div>
 
-                return (
-                  <div key={session._id} className="featured-session-card">
-                    {/* <div className="featured-session-image">
-                      <img
-                        src={sessionImg}
-                        alt={session.title || session.name || 'Session'}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = DEFAULT_SESSION_IMAGE;
-                        }}
-                      />
-                      {isLive && <div className="featured-live-badge">LIVE NOW</div>}
-                    </div> */}
-                    <div className="featured-session-content">
-                      <div className="session-header">
-                        <h3>{session.title || session.name}</h3>
-                        <div className="platform-badge" title={`Meeting via ${getPlatformInfo(session.meetingPlatform).name}`}>
-                          {getPlatformInfo(session.meetingPlatform).icon} {getPlatformInfo(session.meetingPlatform).name}
-                        </div>
-                      </div>
-                      <div className="featured-session-scholar">
-                        <div className="scholar-avatar">
-                          <img
-                            src={scholarImg}
-                            alt={scholarName}
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = DEFAULT_SCHOLAR_IMAGE;
+                <div className="featured-sessions-container">
+                  {sessions.filter(session => {
+                    // Parse session date properly to avoid timezone issues
+                    const dateParts = session.date?.split('-').map(Number) || [];
+                    const sessionDate = dateParts.length === 3 
+                      ? new Date(dateParts[0], dateParts[1] - 1, dateParts[2])
+                      : new Date(session.date);
+                    const today = new Date();
+                    
+                    // Check if session is today
+                    const isToday = (
+                      sessionDate.getDate() === today.getDate() &&
+                      sessionDate.getMonth() === today.getMonth() &&
+                      sessionDate.getFullYear() === today.getFullYear()
+                    );
+                    
+                    // Filter by search query - support both scholarSession and scholarName
+                    const scholarInfo = getSessionScholarInfo(session);
+                    const matchesSearch = !todaySessionSearch || 
+                      (session.title || session.name || '').toLowerCase().includes(todaySessionSearch.toLowerCase()) ||
+                      scholarInfo.name.toLowerCase().includes(todaySessionSearch.toLowerCase());
+                    
+                    return isToday && matchesSearch;
+                  }).map(session => {
+                    const isLive = isSessionLive(session.date, session.startTime, session.endTime);
+                    const isReadyToJoin = isSessionReadyToJoin(session.date, session.startTime, session.endTime);
+                    const isPast = isPastSession(session.date, session.endTime);
+                    const isUpcoming = isUpcomingSession(session.date, session.startTime);
+
+                    // Get scholar data (supports both ScholarSession and User-based scholars)
+                    const scholarInfo = getSessionScholarInfo(session);
+
+                    // Use actual session and scholar data
+                    const sessionImg = session.image || 'https://via.placeholder.com/400x200?text=Islamic+Session';
+                    const scholarImg = scholarInfo.image;
+                    const scholarName = scholarInfo.name;
+
+                    return (
+                      <div key={session._id} className="featured-session-card">
+                        {/* View Button at top-left */}
+                        <div className="session-card-view">
+                          <button
+                            className="card-action-icon view-icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/session/${session._id}`);
                             }}
-                          />
+                            title="View Session Details"
+                          >
+                            <FaEye />
+                          </button>
                         </div>
-                        <span>{scholarName}</span>
-                        {/* {scholar?.specialty && <span className="scholar-specialty"> | {scholar.specialty}</span>} */}
-                      </div>
-                      <p className="featured-session-description">{session.description}</p>
-
-                      <div className="featured-session-details">
-                        <div className="detail">
-                          <FaCalendarAlt /> {formatDate(session.date)}
-                        </div>
-                        <div className="detail">
-                          <FaClock /> {formatTime(session.startTime)} - {formatTime(session.endTime)}
-                        </div>
-                        <div className="detail">
-                          <FaMapMarkerAlt /> {session.location || 'Online via Zoom/Google Meet'}
-                        </div>
-                      </div>
-
-                      {isUpcoming && countdowns[session._id || session.id] && (
-                        <div className="featured-session-countdown">
-                          <div className="countdown-label">Starting in:</div>
-                          <div className="countdown-timer">{countdowns[session._id || session.id].timeString}</div>
-                          <div className="countdown-progress">
-                            <div
-                              className="countdown-bar"
-                              style={{ width: `${countdowns[session._id || session.id].progressPercent}%` }}
-                            ></div>
+                        {/* Edit/Delete icons at top-right for scholars and admins */}
+                        {canManageSession(session) && (
+                          <div className="session-card-actions">
+                            <button
+                              className="card-action-icon edit-icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditSession(session);
+                              }}
+                              title="Edit Session"
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              className="card-action-icon delete-icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteSession(session._id, session.title || session.name);
+                              }}
+                              title="Delete Session"
+                            >
+                              <FaTrash />
+                            </button>
                           </div>
-                        </div>
-                      )}
-
-                      {isLive && (
-                        <div className="featured-session-live-indicator">
-                          <div className="live-pulse"></div>
-                          <span>This session is live now!</span>
-                        </div>
-                      )}
-
-                      <div className="featured-session-countdown">
-                        <div className="countdown-label">Starts in:</div>
-                        <div className="countdown-timer">{getTimeUntilSession(session.date, session.startTime)}</div>
-                        <div className="countdown-progress">
-                          <div className="countdown-bar" style={{
-                            width: `${Math.min(100, (1 - (new Date(`${session.date}T${session.startTime}`) - new Date()) / (1000 * 60 * 60 * 24 * 7)) * 100)}%`
-                          }}></div>
-                        </div>
-                      </div>
-
-                      <button
-                        className={`featured-join-button ${isLive ? 'active' : ''} ${isPast ? 'disabled' : ''}`}
-                        onClick={() => handleJoinSession(session.zoomLink, session.meetingPlatform)}
-                        disabled={!isLive}
-                      >
-                        {isLive ? (
-                          <>
-                            <FaVideo /> {getPlatformInfo(session.meetingPlatform).buttonText}
-                          </>
-                        ) : isPast ? (
-                          'Session Ended'
-                        ) : (
-                          <>
-                            <FaRegClock /> Upcoming Today
-                          </>
                         )}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-              {sessions.filter(session => {
-                const sessionDate = new Date(session.date);
-                const today = new Date();
-                
-                // Check if session is today
-                const isToday = (
-                  sessionDate.getDate() === today.getDate() &&
-                  sessionDate.getMonth() === today.getMonth() &&
-                  sessionDate.getFullYear() === today.getFullYear()
-                );
-                
-                // Only show today's sessions for the no-sessions message check
-                return isToday;
-              }).length === 0 && (
-                  <div className="no-sessions-message">
-                    <p className='no-message'>No sessions scheduled for today. Check out our upcoming sessions below!</p>
-                  </div>
-                )}
-            </div>
-          </div>
-        </div>
+                        <div className="featured-session-content">
+                          <div className="session-header">
+                            <h3>{session.title || session.name}</h3>
+                            <div className="platform-badge" title={`Meeting via ${getPlatformInfo(session.meetingPlatform).name}`}>
+                              {getPlatformInfo(session.meetingPlatform).icon} {getPlatformInfo(session.meetingPlatform).name}
+                            </div>
+                          </div>
+                          <div className="featured-session-scholar">
+                            <div className="scholar-avatar">
+                              <img
+                                src={scholarImg}
+                                alt={scholarName}
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = DEFAULT_SCHOLAR_IMAGE;
+                                }}
+                              />
+                            </div>
+                            <span>{scholarName}</span>
+                          </div>
+                          <p className="featured-session-description">{session.description}</p>
 
-        {/* Upcoming Sessions */}
-        <div className="featured-sessions-section mt-12">
-          <div className="section-container">
-            <div className="section-badge">Upcoming</div>
-            <h2 className="section-tot">Future Sessions</h2>
-            <p className="section-description">Browse and register for our upcoming Q&A sessions</p>
+                          <div className="featured-session-details">
+                            <div className="detail">
+                              <FaCalendarAlt /> {formatDate(session.date)}
+                            </div>
+                            <div className="detail">
+                              <FaClock /> {formatTime(session.startTime)} - {formatTime(session.endTime)}
+                            </div>
+                            <div className="detail">
+                              <FaMapMarkerAlt /> {session.location || 'Online via Zoom/Google Meet'}
+                            </div>
+                          </div>
 
-            <div className="featured-sessions-container">
-              {sessions.filter(session => {
-                const sessionDate = new Date(session.date);
-                const today = new Date();
-                
-                // Check if session is in the future (not today)
-                const isFutureDate = sessionDate > today;
-                
-                // Check if session is today
-                const isToday = (
-                  sessionDate.getDate() === today.getDate() &&
-                  sessionDate.getMonth() === today.getMonth() &&
-                  sessionDate.getFullYear() === today.getFullYear()
-                );
-                
-                // Only show future sessions (exclude today's sessions and past dates)
-                return isFutureDate && !isToday;
-              }).map(session => {
-                const isLive = isSessionLive(session.date, session.startTime, session.endTime);
-                const isReadyToJoin = isSessionReadyToJoin(session.date, session.startTime, session.endTime);
-                const isPast = isPastSession(session.date, session.endTime);
-                const isUpcoming = isUpcomingSession(session.date, session.startTime);
+                          {isUpcoming && countdowns[session._id || session.id] && (
+                            <div className="featured-session-countdown">
+                              <div className="countdown-label">Starting in:</div>
+                              <div className="countdown-timer">{countdowns[session._id || session.id].timeString}</div>
+                              <div className="countdown-progress">
+                                <div
+                                  className="countdown-bar"
+                                  style={{ width: `${countdowns[session._id || session.id].progressPercent}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                          )}
 
-                // Get scholar data from the populated scholarSession
-                const scholar = session.scholarSession;
+                          {isLive && (
+                            <div className="featured-session-live-indicator">
+                              <div className="live-pulse"></div>
+                              <span>This session is live now!</span>
+                            </div>
+                          )}
 
-                // Use actual session and scholar data
-                const sessionImg = session.image || 'https://via.placeholder.com/400x200?text=Upcoming+Session';
-                const scholarImg = scholar?.image ? `https://islamic-sphere-backend-two.vercel.app/uploads/${scholar.image}` : DEFAULT_SCHOLAR_IMAGE;
-                const scholarName = scholar?.name || 'Scholar';
+                          <div className="featured-session-countdown">
+                            <div className="countdown-label">Starts in:</div>
+                            <div className="countdown-timer">{getTimeUntilSession(session.date, session.startTime)}</div>
+                            <div className="countdown-progress">
+                              <div className="countdown-bar" style={{
+                                width: `${Math.min(100, (1 - (new Date(`${session.date}T${session.startTime}`) - new Date()) / (1000 * 60 * 60 * 24 * 7)) * 100)}%`
+                              }}></div>
+                            </div>
+                          </div>
 
-                return (
-                  <div key={session._id} className="featured-session-card">
-                    {/* <div className="featured-session-image">
-                      <img
-                        src={sessionImg}
-                        alt={session.title || session.name || 'Session'}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = DEFAULT_SESSION_IMAGE;
-                        }}
-                      />
-                    </div> */}
-                    <div className="featured-session-content">
-                      <div className="session-header">
-                        <h3>{session.title || session.name}</h3>
-                        <div className="platform-badge" title={`Meeting via ${getPlatformInfo(session.meetingPlatform).name}`}>
-                          {getPlatformInfo(session.meetingPlatform).icon} {getPlatformInfo(session.meetingPlatform).name}
+                          <button
+                            className={`featured-join-button ${isLive ? 'active' : ''} ${isPast ? 'disabled' : ''}`}
+                            onClick={() => handleJoinSession(session.zoomLink, session.meetingPlatform)}
+                            disabled={!isLive}
+                          >
+                            {isLive ? (
+                              <>
+                                <FaVideo /> {getPlatformInfo(session.meetingPlatform).buttonText}
+                              </>
+                            ) : isPast ? (
+                              'Session Ended'
+                            ) : (
+                              <>
+                                <FaRegClock /> Upcoming Today
+                              </>
+                            )}
+                          </button>
                         </div>
                       </div>
-                      <div className="featured-session-scholar">
-                        <div className="scholar-avatar">
-                          <img
-                            src={scholarImg}
-                            alt={scholarName}
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = DEFAULT_SCHOLAR_IMAGE;
+                    );
+                  })}
+                  {sessions.filter(session => {
+                    // Parse session date properly to avoid timezone issues
+                    const dateParts = session.date?.split('-').map(Number) || [];
+                    const sessionDate = dateParts.length === 3 
+                      ? new Date(dateParts[0], dateParts[1] - 1, dateParts[2])
+                      : new Date(session.date);
+                    const today = new Date();
+                    
+                    const isToday = (
+                      sessionDate.getDate() === today.getDate() &&
+                      sessionDate.getMonth() === today.getMonth() &&
+                      sessionDate.getFullYear() === today.getFullYear()
+                    );
+                    
+                    const scholarInfo = getSessionScholarInfo(session);
+                    const matchesSearch = !todaySessionSearch || 
+                      (session.title || session.name || '').toLowerCase().includes(todaySessionSearch.toLowerCase()) ||
+                      scholarInfo.name.toLowerCase().includes(todaySessionSearch.toLowerCase());
+                    
+                    return isToday && matchesSearch;
+                  }).length === 0 && (
+                    <div className="no-sessions-message">
+                      <p className='no-message'>
+                        {todaySessionSearch 
+                          ? `No sessions found matching "${todaySessionSearch}"` 
+                          : "No sessions scheduled for today. Check out our upcoming sessions!"}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Upcoming Sessions Tab */}
+            {activeSessionTab === 'upcoming' && (
+              <div className="tab-panel">
+                {/* Search Bar for Upcoming Sessions */}
+                <div className="session-search-bar">
+                  <FaSearch className="search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Search upcoming sessions by name..."
+                    value={upcomingSessionSearch}
+                    onChange={(e) => setUpcomingSessionSearch(e.target.value)}
+                  />
+                  {upcomingSessionSearch && (
+                    <button className="clear-search" onClick={() => setUpcomingSessionSearch('')}>
+                      <FaTimes />
+                    </button>
+                  )}
+                </div>
+
+                <div className="featured-sessions-container">
+                  {sessions.filter(session => {
+                    // Parse session date properly to avoid timezone issues
+                    const dateParts = session.date?.split('-').map(Number) || [];
+                    const sessionDate = dateParts.length === 3 
+                      ? new Date(dateParts[0], dateParts[1] - 1, dateParts[2])
+                      : new Date(session.date);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    sessionDate.setHours(0, 0, 0, 0);
+                    
+                    // Check if session is in the future (not today)
+                    const isFutureDate = sessionDate > today;
+                    
+                    // Check if session is today
+                    const isToday = (
+                      sessionDate.getDate() === today.getDate() &&
+                      sessionDate.getMonth() === today.getMonth() &&
+                      sessionDate.getFullYear() === today.getFullYear()
+                    );
+                    
+                    // Filter by search query - support both scholarSession and scholarName
+                    const scholarInfo = getSessionScholarInfo(session);
+                    const matchesSearch = !upcomingSessionSearch || 
+                      (session.title || session.name || '').toLowerCase().includes(upcomingSessionSearch.toLowerCase()) ||
+                      scholarInfo.name.toLowerCase().includes(upcomingSessionSearch.toLowerCase());
+                    
+                    return isFutureDate && !isToday && matchesSearch;
+                  }).map(session => {
+                    const isLive = isSessionLive(session.date, session.startTime, session.endTime);
+                    const isReadyToJoin = isSessionReadyToJoin(session.date, session.startTime, session.endTime);
+                    const isPast = isPastSession(session.date, session.endTime);
+                    const isUpcoming = isUpcomingSession(session.date, session.startTime);
+
+                    // Get scholar data (supports both ScholarSession and User-based scholars)
+                    const scholarInfo = getSessionScholarInfo(session);
+
+                    // Use actual session and scholar data
+                    const sessionImg = session.image || 'https://via.placeholder.com/400x200?text=Upcoming+Session';
+                    const scholarImg = scholarInfo.image;
+                    const scholarName = scholarInfo.name;
+
+                    return (
+                      <div key={session._id} className="featured-session-card">
+                        {/* View Button at top-left */}
+                        <div className="session-card-view">
+                          <button
+                            className="card-action-icon view-icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/session/${session._id}`);
                             }}
-                          />
+                            title="View Session Details"
+                          >
+                            <FaEye />
+                          </button>
                         </div>
-                        <span>{scholarName}</span>
-                        {scholar?.specialty && <span className="scholar-specialty"> | {scholar.specialty}</span>}
-                      </div>
-                      <p className="featured-session-description">{session.description}</p>
+                        {/* Edit/Delete icons at top-right for scholars and admins */}
+                        {canManageSession(session) && (
+                          <div className="session-card-actions">
+                            <button
+                              className="card-action-icon edit-icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditSession(session);
+                              }}
+                              title="Edit Session"
+                            >
+                              <FaEdit />
+                            </button>
+                            <button
+                              className="card-action-icon delete-icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteSession(session._id, session.title || session.name);
+                              }}
+                              title="Delete Session"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        )}
+                        <div className="featured-session-content">
+                          <div className="session-header">
+                            <h3>{session.title || session.name}</h3>
+                            <div className="platform-badge" title={`Meeting via ${getPlatformInfo(session.meetingPlatform).name}`}>
+                              {getPlatformInfo(session.meetingPlatform).icon} {getPlatformInfo(session.meetingPlatform).name}
+                            </div>
+                          </div>
+                          <div className="featured-session-scholar">
+                            <div className="scholar-avatar">
+                              <img
+                                src={scholarImg}
+                                alt={scholarName}
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = DEFAULT_SCHOLAR_IMAGE;
+                                }}
+                              />
+                            </div>
+                            <span>{scholarName}</span>
+                          </div>
+                          <p className="featured-session-description">{session.description}</p>
 
-                      <div className="featured-session-details">
-                        <div className="detail">
-                          <FaCalendarAlt /> {formatDate(session.date)}
-                        </div>
-                        <div className="detail">
-                          <FaClock /> {formatTime(session.startTime)} - {formatTime(session.endTime)}
-                        </div>
-                        <div className="detail">
-                          <FaMapMarkerAlt /> Online via {getPlatformInfo(session.meetingPlatform).name}
+                          <div className="featured-session-details">
+                            <div className="detail">
+                              <FaCalendarAlt /> {formatDate(session.date)}
+                            </div>
+                            <div className="detail">
+                              <FaClock /> {formatTime(session.startTime)} - {formatTime(session.endTime)}
+                            </div>
+                            <div className="detail">
+                              <FaMapMarkerAlt /> Online via {getPlatformInfo(session.meetingPlatform).name}
+                            </div>
+                          </div>
+
+                          <button
+                            className="featured-join-button"
+                          >
+                            <FaRegClock /> Upcoming
+                          </button>
                         </div>
                       </div>
-
-                      <button
-                        className="featured-join-button"
-                      // onClick={() => handleJoinSession(session.zoomLink)}
-                      >
-                        <FaRegClock /> Upcoming
-                      </button>
+                    );
+                  })}
+                  {sessions.filter(session => {
+                    // Parse session date properly to avoid timezone issues
+                    const dateParts = session.date?.split('-').map(Number) || [];
+                    const sessionDate = dateParts.length === 3 
+                      ? new Date(dateParts[0], dateParts[1] - 1, dateParts[2])
+                      : new Date(session.date);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    sessionDate.setHours(0, 0, 0, 0);
+                    
+                    const isFutureDate = sessionDate > today;
+                    
+                    const isToday = (
+                      sessionDate.getDate() === today.getDate() &&
+                      sessionDate.getMonth() === today.getMonth() &&
+                      sessionDate.getFullYear() === today.getFullYear()
+                    );
+                    
+                    const scholarInfo = getSessionScholarInfo(session);
+                    const matchesSearch = !upcomingSessionSearch || 
+                      (session.title || session.name || '').toLowerCase().includes(upcomingSessionSearch.toLowerCase()) ||
+                      scholarInfo.name.toLowerCase().includes(upcomingSessionSearch.toLowerCase());
+                    
+                    return isFutureDate && !isToday && matchesSearch;
+                  }).length === 0 && (
+                    <div className="no-sessions-message">
+                      <p className='no-message'>
+                        {upcomingSessionSearch 
+                          ? `No upcoming sessions found matching "${upcomingSessionSearch}"` 
+                          : "No upcoming sessions scheduled yet. Check back soon!"}
+                      </p>
                     </div>
-                  </div>
-                );
-              })}
-              {sessions.filter(session => {
-                const sessionDate = new Date(session.date);
-                const today = new Date();
-                
-                // Check if session is in the future (not today)
-                const isFutureDate = sessionDate > today;
-                
-                // Check if session is today
-                const isToday = (
-                  sessionDate.getDate() === today.getDate() &&
-                  sessionDate.getMonth() === today.getMonth() &&
-                  sessionDate.getFullYear() === today.getFullYear()
-                );
-                
-                // Only show future sessions for the no-sessions message check
-                return isFutureDate && !isToday;
-              }).length === 0 && (
-                  <div className="no-sessions-message">
-                    <p>No upcoming sessions scheduled yet. Check back soon!</p>
-                  </div>
-                )}
-            </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* My Sessions Tab - Only for Scholars */}
+            {activeSessionTab === 'mysessions' && user?.role === 'scholar' && (
+              <div className="tab-panel">
+                {/* Search Bar for My Sessions */}
+                <div className="session-search-bar">
+                  <FaSearch className="search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Search your sessions by name..."
+                    value={mySessionSearch}
+                    onChange={(e) => setMySessionSearch(e.target.value)}
+                  />
+                  {mySessionSearch && (
+                    <button className="clear-search" onClick={() => setMySessionSearch('')}>
+                      <FaTimes />
+                    </button>
+                  )}
+                </div>
+
+                <div className="featured-sessions-container">
+                  {sessions.filter(session => {
+                    // Filter only sessions created by this scholar
+                    // scholarUserId can be either a string ID or a populated object with _id
+                    const sessionScholarId = typeof session.scholarUserId === 'object' 
+                      ? session.scholarUserId?._id 
+                      : session.scholarUserId;
+                    
+                    const currentUserId = user?.id || user?._id;
+                    
+                    const isMySession = sessionScholarId === currentUserId ||
+                                        String(sessionScholarId) === String(currentUserId);
+                    
+                    // Filter by search query
+                    const matchesSearch = !mySessionSearch || 
+                      (session.title || session.name || '').toLowerCase().includes(mySessionSearch.toLowerCase());
+                    
+                    return isMySession && matchesSearch;
+                  }).map(session => {
+                    const isLive = isSessionLive(session.date, session.startTime, session.endTime);
+                    const isPast = isPastSession(session.date, session.endTime);
+
+                    // For My Sessions, use the logged-in user's data since these are their own sessions
+                    const scholarName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || user?.username || 'Scholar';
+                    const scholarImg = getScholarImageUrl(user?.image);
+
+                    return (
+                      <div key={session._id} className="featured-session-card">
+                        {/* View Button at top-left */}
+                        <div className="session-card-view">
+                          <button
+                            className="card-action-icon view-icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/session/${session._id}`);
+                            }}
+                            title="View Session Details"
+                          >
+                            <FaEye />
+                          </button>
+                        </div>
+                        {/* Edit/Delete icons at top-right */}
+                        <div className="session-card-actions">
+                          <button
+                            className="card-action-icon edit-icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditSession(session);
+                            }}
+                            title="Edit Session"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            className="card-action-icon delete-icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteSession(session._id, session.title || session.name);
+                            }}
+                            title="Delete Session"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                        <div className="featured-session-content">
+                          <div className="session-header">
+                            <h3>{session.title || session.name}</h3>
+                            <div className="platform-badge" title={`Meeting via ${getPlatformInfo(session.meetingPlatform).name}`}>
+                              {getPlatformInfo(session.meetingPlatform).icon} {getPlatformInfo(session.meetingPlatform).name}
+                            </div>
+                          </div>
+                          <div className="featured-session-scholar">
+                            <div className="scholar-avatar">
+                              <img
+                                src={scholarImg}
+                                alt={scholarName}
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = DEFAULT_SCHOLAR_IMAGE;
+                                }}
+                              />
+                            </div>
+                            <span>{scholarName}</span>
+                          </div>
+                          <p className="featured-session-description">{session.description}</p>
+
+                          <div className="featured-session-details">
+                            <div className="detail">
+                              <FaCalendarAlt /> {formatDate(session.date)}
+                            </div>
+                            <div className="detail">
+                              <FaClock /> {formatTime(session.startTime)} - {formatTime(session.endTime)}
+                            </div>
+                            <div className="detail">
+                              <FaMapMarkerAlt /> {session.location || 'Online via ' + getPlatformInfo(session.meetingPlatform).name}
+                            </div>
+                          </div>
+
+                          {isLive && (
+                            <div className="featured-session-live-indicator">
+                              <div className="live-pulse"></div>
+                              <span>This session is live now!</span>
+                            </div>
+                          )}
+
+                          <div className="featured-session-countdown">
+                            <div className="countdown-label">Starts in:</div>
+                            <div className="countdown-timer">{getTimeUntilSession(session.date, session.startTime)}</div>
+                          </div>
+
+                          <button
+                            className={`featured-join-button ${isLive ? 'active' : ''} ${isPast ? 'disabled' : ''}`}
+                            onClick={() => handleJoinSession(session.zoomLink, session.meetingPlatform)}
+                            disabled={!isLive}
+                          >
+                            {isLive ? (
+                              <>
+                                <FaVideo /> {getPlatformInfo(session.meetingPlatform).buttonText}
+                              </>
+                            ) : isPast ? (
+                              'Session Ended'
+                            ) : (
+                              <>
+                                <FaRegClock /> Upcoming
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {sessions.filter(session => {
+                    // scholarUserId can be either a string ID or a populated object with _id
+                    const sessionScholarId = typeof session.scholarUserId === 'object' 
+                      ? session.scholarUserId?._id 
+                      : session.scholarUserId;
+                    
+                    const currentUserId = user?.id || user?._id;
+                    
+                    const isMySession = sessionScholarId === currentUserId ||
+                                        String(sessionScholarId) === String(currentUserId);
+                    const matchesSearch = !mySessionSearch || 
+                      (session.title || session.name || '').toLowerCase().includes(mySessionSearch.toLowerCase());
+                    return isMySession && matchesSearch;
+                  }).length === 0 && (
+                    <div className="no-sessions-message">
+                      <p className='no-message'>
+                        {mySessionSearch 
+                          ? `No sessions found matching "${mySessionSearch}"` 
+                          : "You haven't created any sessions yet. Click 'Add Session' to create one!"}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
-
       </div>
+
+      {/* Add/Edit Session Modal for Scholars */}
+      {showSessionModal && (
+        <div className="session-modal-overlay">
+          <div className="session-modal">
+            <div className="session-modal-header">
+              <h2><FaCalendarAlt /> {isEditingSession ? 'Edit Session' : 'Add New Session'}</h2>
+              <button className="close-modal-btn" onClick={handleCloseSessionModal}>
+                <FaTimes />
+              </button>
+            </div>
+            <form onSubmit={handleCreateSession} className="session-modal-form">
+              <div className="form-group">
+                <label htmlFor="title">Session Title *</label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={sessionFormData.title}
+                  onChange={handleSessionFormChange}
+                  placeholder="Enter session title"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="description">Description *</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={sessionFormData.description}
+                  onChange={handleSessionFormChange}
+                  placeholder="Enter session description"
+                  rows="4"
+                  required
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="date">Date *</label>
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={sessionFormData.date}
+                    onChange={handleSessionFormChange}
+                    min={isEditingSession ? undefined : (() => {
+                      const today = new Date();
+                      const year = today.getFullYear();
+                      const month = String(today.getMonth() + 1).padStart(2, '0');
+                      const day = String(today.getDate()).padStart(2, '0');
+                      return `${year}-${month}-${day}`;
+                    })()}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="startTime">Start Time *</label>
+                  <input
+                    type="time"
+                    id="startTime"
+                    name="startTime"
+                    value={sessionFormData.startTime}
+                    onChange={handleSessionFormChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="endTime">End Time *</label>
+                  <input
+                    type="time"
+                    id="endTime"
+                    name="endTime"
+                    value={sessionFormData.endTime}
+                    onChange={handleSessionFormChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="meetingPlatform">Meeting Platform *</label>
+                <select
+                  id="meetingPlatform"
+                  name="meetingPlatform"
+                  value={sessionFormData.meetingPlatform}
+                  onChange={handleSessionFormChange}
+                  required
+                >
+                  <option value="zoom">Zoom</option>
+                  <option value="googlemeet">Google Meet</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="zoomLink">
+                  {sessionFormData.meetingPlatform === 'zoom' ? 'Zoom' : 'Google Meet'} Link *
+                </label>
+                <input
+                  type="url"
+                  id="zoomLink"
+                  name="zoomLink"
+                  value={sessionFormData.zoomLink}
+                  onChange={handleSessionFormChange}
+                  placeholder={`Enter ${sessionFormData.meetingPlatform === 'zoom' ? 'Zoom' : 'Google Meet'} link`}
+                  required
+                />
+              </div>
+
+              <div className="session-modal-actions">
+                <button type="button" className="cancel-btn" onClick={handleCloseSessionModal}>
+                  Cancel
+                </button>
+                <button type="submit" className="submit-btn" disabled={sessionLoading}>
+                  {sessionLoading 
+                    ? (isEditingSession ? 'Updating...' : 'Creating...') 
+                    : (isEditingSession ? 'Update Session' : 'Create Session')
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <Footer />
 

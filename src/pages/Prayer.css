@@ -324,3 +324,113 @@
 .modal button:hover {
   transform: translateY(-2px);
 }
+
+/* Prayer Notification Styles */
+.notification-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(224, 195, 62, 0.2);
+  color: #055160;
+}
+
+.notification-toggle-btn:hover {
+  background: rgba(224, 195, 62, 0.3);
+}
+
+.notification-toggle-btn.enabled {
+  background: #055160;
+  color: white;
+  box-shadow: 0 4px 15px rgba(5, 81, 96, 0.3);
+}
+
+.notification-toggle-btn.enabled:hover {
+  background: #033642;
+}
+
+.notification-toggle-btn.enabled svg {
+  color: #e0c33e;
+}
+
+.notification-settings-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  z-index: 100;
+  min-width: 280px;
+  border: 1px solid rgba(5, 81, 96, 0.1);
+}
+
+.notification-settings-dropdown h4 {
+  color: #055160;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.notification-settings-dropdown select {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #055160;
+  background: #f9fafb;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.notification-settings-dropdown select:focus {
+  outline: none;
+  border-color: #e0c33e;
+}
+
+.notification-settings-dropdown p {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+/* Notification Bell Animation */
+@keyframes bellRing {
+  0%, 100% { transform: rotate(0); }
+  10%, 30%, 50%, 70% { transform: rotate(10deg); }
+  20%, 40%, 60% { transform: rotate(-10deg); }
+  80% { transform: rotate(0); }
+}
+
+.notification-toggle-btn.enabled svg {
+  animation: bellRing 0.8s ease-in-out;
+}
+
+/* Settings gear button */
+.notification-settings-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #055160;
+  font-size: 1rem;
+}
+
+.notification-settings-btn:hover {
+  color: #e0c33e;
+}

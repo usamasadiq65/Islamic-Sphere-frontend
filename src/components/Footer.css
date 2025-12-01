@@ -31,6 +31,55 @@
 .footer-brand {
   margin-bottom: 10px;
   text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.footer-logo-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.4s ease;
+}
+
+.footer-logo-icon-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(248, 225, 108, 0.6), rgba(248, 225, 108, 0.1), rgba(248, 225, 108, 0.6));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.footer-logo-icon-wrapper:hover {
+  transform: scale(1.08) rotate(5deg);
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.4),
+    0 0 25px rgba(248, 225, 108, 0.3);
+}
+
+.footer-logo-svg {
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 0 5px rgba(248, 225, 108, 0.6));
+  transition: all 0.3s ease;
+}
+
+.footer-logo-icon-wrapper:hover .footer-logo-svg {
+  filter: drop-shadow(0 0 12px rgba(248, 225, 108, 0.9));
 }
 
 .logos-text {
@@ -39,7 +88,7 @@
   color: #f8e16c;
   letter-spacing: 0.5px;
   display: inline-block;
-  text-shadow: 0 0 10px rgba(248, 225, 108, 0.3);
+  text-shadow: 0 0 20px rgba(248, 225, 108, 0.3);
 }
 
 .footer-description {

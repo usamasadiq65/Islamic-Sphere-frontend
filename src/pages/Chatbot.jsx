@@ -22,6 +22,16 @@ const Chatbot = () => {
   // }, [messages]);
 
   useEffect(() => {
+    // Auto-scroll to bottom of messages container only (not the page)
+    if (messagesEndRef.current) {
+      const messagesContainer = messagesEndRef.current.parentElement;
+      if (messagesContainer) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    }
+  }, [messages]);
+
+  useEffect(() => {
     loadChatHistory();
   }, []);
 

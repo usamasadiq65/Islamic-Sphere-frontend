@@ -32,6 +32,7 @@ import HajjUmrah from './pages/Hajj&Umrah';
 import QuranicStudies from './pages/QuranicStudies';
 import IslamicCharacter from './pages/IslamicCharacter';
 import QuranReader from './pages/QuranReader';
+import SessionDetails from './pages/SessionDetails';
 
 const App = () => {
   return (
@@ -46,6 +47,7 @@ const App = () => {
           <Route path="/groups/:groupId" element={<GroupDetails />} /> {/* Add this route */}
           <Route path="/profile" element={<Profile />} /> {/* Add this route */}
           <Route path="/qna" element={<QnA />} /> {/* Add this route */}
+          <Route path="/session/:sessionId" element={<SessionDetails />} /> {/* Session Details route */}
           <Route path="/events" element={<Events />} /> {/* Add this route */}
           <Route path="/learning-path" element={<LearningPath />} /> {/* Add this route */}
           <Route path="/admin-events" element={<AdminEvents />} /> {/* Add this route */}
