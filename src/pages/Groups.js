@@ -376,7 +376,7 @@ const Groups = () => {
                             <div className="stats-container">
                               <div className="stat-item">
                                 <span className="stat-label">Tasks:</span>
-                                <span className="stat-value">{`${group.tasks?.filter(task => task.isCompleted).length}/${group.tasks?.length || 0}`}</span>
+                                <span className="stat-value">{group.tasks?.length || 0}</span>
                               </div>
                               <div className="stat-item">
                                 <span className="stat-label">Polls:</span>
@@ -421,7 +421,7 @@ const Groups = () => {
                             <div className="stats-container">
                               <div className="stat-item">
                                 <span className="stat-label">Tasks:</span>
-                                <span className="stat-value">{`${group.tasks?.filter(task => task.isCompleted).length}/${group.tasks?.length || 0}`}</span>
+                                <span className="stat-value">{group.tasks?.length || 0}</span>
                               </div>
                               <div className="stat-item">
                                 <span className="stat-label">Polls:</span>

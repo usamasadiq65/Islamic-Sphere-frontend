@@ -50,7 +50,7 @@ const QnA = () => {
     startTime: '',
     endTime: '',
     zoomLink: '',
-    meetingPlatform: 'zoom',
+    meetingPlatform: 'googlemeet', // Changed default to googlemeet
     scholarUserId: '',
     scholarName: ''
   });
@@ -213,7 +213,7 @@ const QnA = () => {
       startTime: '',
       endTime: '',
       zoomLink: '',
-      meetingPlatform: 'zoom',
+      meetingPlatform: 'googlemeet', // Changed default to googlemeet
       scholarUserId: user?._id || user?.id || '',
       scholarName: scholarName
     });
@@ -231,7 +231,7 @@ const QnA = () => {
       startTime: '',
       endTime: '',
       zoomLink: '',
-      meetingPlatform: 'zoom',
+      meetingPlatform: 'googlemeet', // Changed default to googlemeet
       scholarUserId: '',
       scholarName: ''
     });
@@ -1068,33 +1068,12 @@ const QnA = () => {
                               <FaCalendarAlt /> {formatDate(session.date)}
                             </div>
                             <div className="detail">
-                              <FaClock /> {formatTime(session.startTime)} - {formatTime(session.endTime)}
+                              <FaClock /> {session.startTime} - {session.endTime}
                             </div>
                             <div className="detail">
-                              <FaMapMarkerAlt /> {session.location || 'Online via Zoom/Google Meet'}
+                              <FaUsers /> {session.participants}/{session.maxParticipants} participants
                             </div>
                           </div>
-
-                          {isUpcoming && countdowns[session._id || session.id] && (
-                            <div className="featured-session-countdown">
-                              <div className="countdown-label">Starting in:</div>
-                              <div className="countdown-timer">{countdowns[session._id || session.id].timeString}</div>
-                              <div className="countdown-progress">
-                                <div
-                                  className="countdown-bar"
-                                  style={{ width: `${countdowns[session._id || session.id].progressPercent}%` }}
-                                ></div>
-                              </div>
-                            </div>
-                          )}
-
-                          {isLive && (
-                            <div className="featured-session-live-indicator">
-                              <div className="live-pulse"></div>
-                              <span>This session is live now!</span>
-                            </div>
-                          )}
-
                           <div className="featured-session-countdown">
                             <div className="countdown-label">Starts in:</div>
                             <div className="countdown-timer">{getTimeUntilSession(session.date, session.startTime)}</div>
@@ -1104,23 +1083,15 @@ const QnA = () => {
                               }}></div>
                             </div>
                           </div>
-
                           <button
-                            className={`featured-join-button ${isLive ? 'active' : ''} ${isPast ? 'disabled' : ''}`}
-                            onClick={() => handleJoinSession(session.zoomLink, session.meetingPlatform)}
-                            disabled={!isLive}
+                            className={`featured-join-button ${isSessionReadyToJoin(session.date, session.startTime) ? 'active' : 'disabled'}`}
+                            onClick={() => isSessionReadyToJoin(session.date, session.startTime) && handleJoinSession(session.zoomLink, session.meetingPlatform)}
+                            disabled={!isSessionReadyToJoin(session.date, session.startTime)}
                           >
-                            {isLive ? (
-                              <>
-                                <FaVideo /> {getPlatformInfo(session.meetingPlatform).buttonText}
-                              </>
-                            ) : isPast ? (
-                              'Session Ended'
-                            ) : (
-                              <>
-                                <FaRegClock /> Upcoming Today
-                              </>
-                            )}
+                            <FaVideo /> {isSessionLive(session.date, session.startTime) ? 
+                              `Join Live on ${getPlatformInfo(session.meetingPlatform).name}` :
+                              isSessionReadyToJoin(session.date, session.startTime) ? 
+                              getPlatformInfo(session.meetingPlatform).buttonText : 'Remind Me'}
                           </button>
                         </div>
                       </div>
@@ -1602,23 +1573,11 @@ const QnA = () => {
                 </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="meetingPlatform">Meeting Platform *</label>
-                <select
-                  id="meetingPlatform"
-                  name="meetingPlatform"
-                  value={sessionFormData.meetingPlatform}
-                  onChange={handleSessionFormChange}
-                  required
-                >
-                  <option value="zoom">Zoom</option>
-                  <option value="googlemeet">Google Meet</option>
-                </select>
-              </div>
+              {/* Removed Meeting Platform dropdown - only Google Meet is supported */}
 
               <div className="form-group">
                 <label htmlFor="zoomLink">
-                  {sessionFormData.meetingPlatform === 'zoom' ? 'Zoom' : 'Google Meet'} Link *
+                  Google Meet Link *
                 </label>
                 <input
                   type="url"
@@ -1626,7 +1585,7 @@ const QnA = () => {
                   name="zoomLink"
                   value={sessionFormData.zoomLink}
                   onChange={handleSessionFormChange}
-                  placeholder={`Enter ${sessionFormData.meetingPlatform === 'zoom' ? 'Zoom' : 'Google Meet'} link`}
+                  placeholder="Enter Google Meet link"
                   required
                 />
               </div>

@@ -33,6 +33,7 @@ import QuranicStudies from './pages/QuranicStudies';
 import IslamicCharacter from './pages/IslamicCharacter';
 import QuranReader from './pages/QuranReader';
 import SessionDetails from './pages/SessionDetails';
+import ProgressHistory from './pages/ProgressHistory';
 
 const App = () => {
   return (
@@ -73,6 +74,7 @@ const App = () => {
             <Route path="/learn/character" element={<IslamicCharacter />} />
             <Route path="/learn/character/:topic" element={<IslamicCharacter />} />
             <Route path="/learn/quran-reader" element={<QuranReader />} />
+            <Route path="/progress-history/:groupId" element={<ProgressHistory />} />
         </Routes>
       </Router>
       <Toaster

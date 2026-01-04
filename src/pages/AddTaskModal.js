@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Modal.css';
 
-const AddTaskModal = ({ onClose, onSubmit, groupMembers = [] }) => {
+const AddTaskModal = ({ onClose, onSubmit, groupMembers = [], onSaveToList }) => {
   const [taskData, setTaskData] = useState({
     title: '',
     description: '',
@@ -10,6 +10,7 @@ const AddTaskModal = ({ onClose, onSubmit, groupMembers = [] }) => {
   });
 
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [saveToList, setSaveToList] = useState(false);
 
   // Toggle member selection
   const toggleMemberSelection = (memberId) => {
@@ -46,6 +47,16 @@ const AddTaskModal = ({ onClose, onSubmit, groupMembers = [] }) => {
       deadline: taskData.deadline,
       assignedTo: selectedMembers
     });
+
+    // Save to user's task list if checkbox is checked
+    if (saveToList && onSaveToList) {
+      onSaveToList({
+        title: taskData.title,
+        description: taskData.description,
+        category: 'Custom',
+        isBuiltIn: false
+      });
+    }
   };
 
   return (
@@ -106,6 +117,23 @@ const AddTaskModal = ({ onClose, onSubmit, groupMembers = [] }) => {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Save to My Task List Option */}
+          {onSaveToList && (
+            <div className="form-group">
+              <label className="save-to-list-label">
+                <input
+                  type="checkbox"
+                  checked={saveToList}
+                  onChange={(e) => setSaveToList(e.target.checked)}
+                  className="save-to-list-checkbox"
+                />
+                <span className="save-to-list-text">
+                  <i className="fas fa-bookmark"></i> Save to My Task List for future use
+                </span>
+              </label>
             </div>
           )}
 

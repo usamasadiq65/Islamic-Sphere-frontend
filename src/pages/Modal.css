@@ -250,3 +250,39 @@
 .secondary-button:hover {
   background-color: #e9ecef;
 }
+
+/* Save to List Checkbox Styling */
+.save-to-list-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-to-list-label:hover {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border-color: #4ade80;
+}
+
+.save-to-list-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #16a34a;
+  cursor: pointer;
+}
+
+.save-to-list-text {
+  font-size: 0.9rem;
+  color: #166534;
+  font-weight: 500;
+}
+
+.save-to-list-text i {
+  margin-right: 6px;
+  color: #22c55e;
+}

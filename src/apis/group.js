@@ -185,6 +185,100 @@ const GroupService = {
       throw error.response ? error.response.data : new Error('Network error');
     }
   },
+
+  // ============== USER TASK LIST FUNCTIONS ==============
+  
+  // Get user's personal task list
+  getUserTaskList: async () => {
+    try {
+      const response = await api.get('/user-task-list');
+      return response.data;
+    } catch (error) {
+      console.error('Get user task list error:', error);
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Add task to user's personal task list
+  addToUserTaskList: async (taskData) => {
+    try {
+      const response = await api.post('/user-task-list', taskData);
+      return response.data;
+    } catch (error) {
+      console.error('Add to user task list error:', error);
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Remove task from user's personal task list
+  removeFromUserTaskList: async (taskId) => {
+    try {
+      const response = await api.delete(`/user-task-list/${taskId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Remove from user task list error:', error);
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // ============== PROGRESS HISTORY FUNCTIONS ==============
+
+  // Get user's progress history
+  getProgressHistory: async (period = 'all', startDate = null, endDate = null, groupId = null) => {
+    try {
+      let url = `/progress/history?period=${period}`;
+      if (period === 'custom' && startDate && endDate) {
+        url += `&startDate=${startDate}&endDate=${endDate}`;
+      }
+      if (groupId) {
+        url += `&groupId=${groupId}`;
+      }
+      const response = await api.get(url);
+      return response.data;
+    } catch (error) {
+      console.error('Get progress history error:', error);
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Get progress summary
+  getProgressSummary: async (groupId = null) => {
+    try {
+      let url = '/progress/summary';
+      if (groupId) {
+        url += `?groupId=${groupId}`;
+      }
+      const response = await api.get(url);
+      return response.data;
+    } catch (error) {
+      console.error('Get progress summary error:', error);
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // ============== OWNERSHIP MANAGEMENT FUNCTIONS ==============
+
+  // Add owner to group
+  addOwner: async (groupId, memberId) => {
+    try {
+      const response = await api.post(`/${groupId}/owners`, { memberId });
+      return response.data;
+    } catch (error) {
+      console.error('Add owner error:', error);
+      throw error.response?.data || error.message;
+    }
+  },
+
+  // Remove owner from group (demote to regular member)
+  removeOwner: async (groupId, memberId) => {
+    try {
+      const response = await api.delete(`/${groupId}/owners`, { data: { memberId } });
+      return response.data;
+    } catch (error) {
+      console.error('Remove owner error:', error);
+      throw error.response?.data || error.message;
+    }
+  },
 };
 
 export default GroupService;

@@ -39,9 +39,7 @@ const hajjTopics = {
           "حج اسلام کا پانچواں رکن ہے، ہر جسمانی اور مالی طور پر استطاعت رکھنے والے مسلمان پر فرض ہے۔",
         itemAr: "الْغَرَضُ وَالْأَهَمِّيَّةُ:",
         descriptionAr:
-          "الحج هو الركن الخامس من أركان الإسلام، وهي فريضة على كل مسلم قادر جسدياً ومالياً.",
-        reference: "Qur'an 3:97",
-        source: "Qur'an",
+          "اَلْحَجُّ هُوَ الرُّكْنُ الْخَامِسُ مِنْ أَرْكَانِ الْإِسْلَامِ، وَهِيَ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ قَادِرٍ جَسَدِيًّا وَمَالِيًّا.",
       },
       {
         item: "Difference: Hajj vs. Umrah:",
@@ -51,9 +49,7 @@ const hajjTopics = {
           "حج سال میں صرف ایک بار مخصوص اسلامی مہینوں میں ادا کیا جاتا ہے، جبکہ عمرہ کسی بھی وقت کیا جا سکتا ہے۔",
         itemAr: "الْفَرْقُ بَيْنَ الْحَجِّ وَالْعُمْرَةِ:",
         descriptionAr:
-          "الحج يؤدى مرة واحدة في السنة في أشهر محددة، بينما يمكن أداء العمرة في أي وقت.",
-        reference: "Sunan Ibn Majah 2883",
-        source: "Hadith",
+          "اَلْحَجُّ يُؤَدَّى مَرَّةً وَاحِدَةً فِي السَّنَةِ فِي أَشْهُرٍ مُحَدَّدَةٍ، بَيْنَمَا يُمْكِنُ أَدَاءُ الْعُمْرَةِ فِي أَيِّ وَقْتٍ.",
       },
       {
         item: "Timeline of Rituals:",
@@ -63,9 +59,7 @@ const hajjTopics = {
           "حج ذوالحجہ کی 8 تاریخ سے 13 تاریخ تک ایک سخت نظام الاوقات کی پیروی کرتا ہے۔",
         itemAr: "التَّسَلْسُلُ الزَّمَنِيُّ لِلْمَنَاسِكِ:",
         descriptionAr:
-          "يتبع الحج تسلسلاً زمنياً دقيقاً من ٨ إلى ١٣ من ذي الحجة.",
-        reference: "Sahih al-Bukhari 1651",
-        source: "Hadith",
+          "يَتَّبِعُ الْحَجُّ تَسَلْسُلًا زَمَنِيًّا دَقِيقًا مِنْ ٨ إِلَى ١٣ مِنْ ذِي الْحِجَّةِ.",
       },
     ],
   },
@@ -84,8 +78,6 @@ const hajjTopics = {
         itemAr: "اَلتَّحْضِيرُ الْجِسْمَانِيُّ:",
         descriptionAr:
           "ضَمَانُ الصِّحَّةِ الْجَيِّدَةِ وَأَخْذُ اللَّقَاحَاتِ الضَّرُورِيَّةِ وَاللِّيَاقَةُ الْبَدَنِيَّةُ.",
-        reference: "Qur'an 2:197",
-        source: "Qur'an",
       },
       {
         item: "Financial Preparation:",
@@ -96,8 +88,6 @@ const hajjTopics = {
         itemAr: "التَّحْضِيرُ الْمَالِيُّ:",
         descriptionAr:
           "وَضْعُ الْمِيزَانِيَّةِ وَتَأْكِيدُ الْمَالِ الْحَلَالِ وَتَرْتِيبُ الْأُضْحِيَةِ.",
-        reference: "Sahih al-Bukhari 1494",
-        source: "Hadith",
       },
       {
         item: "Spiritual Preparation:",
@@ -108,8 +98,6 @@ const hajjTopics = {
         itemAr: "التَّحْضِيرُ الرُّوحِيُّ:",
         descriptionAr:
           "التَّوْبَةُ النَّصُوحُ وَعَقْدُ النِّيَّةِ الصَّادِقَةِ وَمُمَارَسَةُ الْأَدْعِيَةِ الْأَسَاسِيَّةِ.",
-        reference: "Sahih al-Bukhari 1",
-        source: "Hadith",
       },
       {
         item: "Packing Checklist:",
@@ -120,8 +108,6 @@ const hajjTopics = {
         itemAr: "قَائِمَةُ حَقَائِبِ السَّفَرِ:",
         descriptionAr:
           "تَجْهِيزُ مَلَابِسِ الْإِحْرَامِ، وَالْمُنَظِّفَاتِ الضَّرُورِيَّةِ، وَالْأَدْوِيَةِ اللَّازِمَةِ.",
-        reference: "Qur'an 2:197",
-        source: "Qur'an",
       },
       {
         item: "Learning the Rites:",
@@ -132,8 +118,6 @@ const hajjTopics = {
         itemAr: "تَعَلُّمُ الْمَنَاسِكِ:",
         descriptionAr:
           "فَهْمُ الشَّعَائِرِ وَأَهَمِّيَّتِهَا قَبْلَ الْوُصُولِ لِأَدَائِهَا بِشَكْلٍ صَحِيحٍ.",
-        reference: "Sahih Muslim 1297",
-        source: "Hadith",
       },
     ],
   },
@@ -150,8 +134,6 @@ const hajjTopics = {
           "A step-by-step physical journey that pilgrims follow outside Makkah, often referred to as the 'Five-Day Movement'. This is the movement between the holy sites: Makkah, Mina, Arafat, and Muzdalifah.",
         descriptionUrdu:
           "ایک مرحلہ وار جسمانی سفر جو حجاج مکہ کے باہر کرتے ہیں، جسے 'پانچ روزہ تحریک' بھی کہا جاتا ہے۔ یہ مقدس مقامات کے درمیان حرکت ہے: مکہ، منیٰ، عرفات، اور مزدلفہ۔",
-        reference: "Sahih al-Bukhari 1651",
-        source: "Hadith",
         // Custom component for the route flow - visually distinct
         hajjRoute: [
           {
@@ -219,8 +201,6 @@ const hajjTopics = {
         itemAr: "اَلْإِحْرَامُ:",
         descriptionAr:
           "اَلدُّخُولُ فِي حَالَةِ الْإِحْرَامِ مِنَ الْمِيقَاتِ، وَالامْتِنَاعُ عَنِ الْمُحَرَّمَاتِ.",
-        reference: "Sahih al-Bukhari 1542",
-        source: "Hadith",
       },
       {
         item: "Tawaf (Qudum):",
@@ -230,8 +210,6 @@ const hajjTopics = {
         itemAr: "اَلطَّوَافُ (الْقُدُومِ):",
         descriptionAr:
           "اَلطَّوَافُ حَوْلَ الْكَعْبَةِ سَبْعَ مَرَّاتٍ عِنْدَ الْوُصُولِ إِلَى مَكَّةَ.",
-        reference: "Sahih al-Bukhari 1617",
-        source: "Hadith",
       },
       {
         item: "Sa'i:",
@@ -242,8 +220,6 @@ const hajjTopics = {
         itemAr: "اَلسَّعْيُ:",
         descriptionAr:
           "اَلسَّعْيُ بَيْنَ الصَّفَا وَالْمَرْوَةِ سَبْعَ مَرَّاتٍ، اتِّبَاعًا لِسُنَّةِ هَاجَرَ عَلَيْهَا السَّلَامُ.",
-        reference: "Qur'an 2:158",
-        source: "Qur'an",
       },
       {
         item: "Standing at Arafat (9th Dhul Hijjah):",
@@ -254,8 +230,6 @@ const hajjTopics = {
         itemAr: "الْوُقُوفُ بِعَرَفَةَ:",
         descriptionAr:
           "رُكْنُ الْحَجِّ الْأَعْظَمُ، قَضَاءُ النَّهَارِ فِي الدُّعَاءِ وَالتَّوْبَةِ وَالتَّأَمُّلِ.",
-        reference: "Sunan al-Tirmidhi 889",
-        source: "Hadith",
       },
       {
         item: "Muzdalifah Night Stay (9th/10th Dhul Hijjah):",
@@ -266,8 +240,6 @@ const hajjTopics = {
         itemAr: "الْمَبِيتُ بِالْمُزْدَلِفَةِ:",
         descriptionAr:
           "قَضَاءُ اللَّيْلِ بِالْمُزْدَلِفَةِ، وَجَمْعُ الْحَصَى وَصَلَاةُ الْمَغْرِبِ وَالْعِشَاءِ مَعًا.",
-        reference: "Sahih al-Bukhari 1682",
-        source: "Hadith",
       },
       {
         item: "Ramy al-Jamarat (10th Dhul Hijjah):",
@@ -278,8 +250,6 @@ const hajjTopics = {
         itemAr: "رَمْيُ الْجَمَرَاتِ:",
         descriptionAr:
           "رَمْيُ الْجَمْرَةِ الْكُبْرَى بِمِنًى فِي يَوْمِ النَّحْرِ (عِيدِ الْأَضْحَى).",
-        reference: "Sahih Muslim 1296",
-        source: "Hadith",
       },
       {
         item: "Animal Sacrifice (Qurbani):",
@@ -290,8 +260,6 @@ const hajjTopics = {
         itemAr: "الْأُضْحِيَةُ:",
         descriptionAr:
           "تَقْدِيمُ الْأُضْحِيَةِ، اتِّبَاعًا لِسُنَّةِ إِبْرَاهِيمَ عَلَيْهِ السَّلَامُ.",
-        reference: "Qur'an 22:36",
-        source: "Qur'an",
       },
       {
         item: "Haircut/Shaving (Halq/Taqsir):",
@@ -302,8 +270,6 @@ const hajjTopics = {
         itemAr: "الْحَلْقُ وَالتَّقْصِيرُ:",
         descriptionAr:
           "الْخُطْوَةُ الْأَخِيرَةُ لِلْخُرُوجِ مِنَ الْإِحْرَامِ، حَلْقُ الرَّأْسِ أَو تَقْصِيرُ الشَّعْرِ.",
-        reference: "Sahih al-Bukhari 1727",
-        source: "Hadith",
       },
       {
         item: "Tawaf al-Wada (Final Tawaf):",
@@ -314,8 +280,6 @@ const hajjTopics = {
         itemAr: "طَوَافُ الْوَدَاعِ:",
         descriptionAr:
           "طَوَافُ الْوَدَاعِ حَوْلَ الْكَعْبَةِ قَبْلَ مُغَادَرَةِ مَكَّةَ (وَاجِبٌ عَلَى غَيْرِ الْمُقِيمِ).",
-        reference: "Sahih al-Bukhari 1755",
-        source: "Hadith",
       },
     ],
   },
@@ -331,7 +295,6 @@ const hajjTopics = {
           "Dua for safe journey as taught by Prophet Muhammad (PBUH).",
         descriptionUrdu: "نبی کریم ﷺ کی تعلیم کردہ سفر کی دعا۔",
         itemAr: "دُعَاءُ السَّفَرِ:",
-        itemAr: "دُعَاءُ السَّفَرِ:",
         descriptionAr: "دُعَاءُ السَّفَرِ كَمَا عَلَّمَهُ النَّبِيُّ ﷺ.",
         arabic:
           "اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا وَاطْوِ عَنَّا بُعْدَهُ، اللَّهُمَّ أَنْتَ الصَّاحِبُ فِي السَّفَرِ وَالْخَلِيفَةُ فِي الْأَهْلِ",
@@ -339,8 +302,6 @@ const hajjTopics = {
           "O Allah, make this journey easy for us and make its distance short for us. O Allah, You are the companion on the journey and the guardian of the family.",
         translationUrdu:
           "اے اللہ! ہمارے لیے اس سفر کو آسان کر دے اور اس کی مسافت کو ہمارے لیے کم کر دے۔ اے اللہ! تو سفر میں ساتھی ہے اور گھر والوں کا نگہبان ہے۔",
-        reference: "Sahih Muslim 1342",
-        source: "Hadith",
       },
       {
         item: "Talbiyah (During Ihram):",
@@ -357,8 +318,6 @@ const hajjTopics = {
           "Here I am, O Allah, here I am. Here I am, You have no partner, here I am. Verily all praise and favor belong to You, and all sovereignty. You have no partner.",
         translationUrdu:
           "حاضر ہوں اے اللہ، حاضر ہوں۔ حاضر ہوں، تیرا کوئی شریک نہیں، حاضر ہوں۔ بے شک تمام تعریف اور نعمت تیری ہے اور بادشاہت بھی، تیرا کوئی شریک نہیں۔",
-        reference: "Sahih Muslim 1184",
-        source: "Hadith",
       },
       {
         item: "During Tawaf:",
@@ -375,8 +334,6 @@ const hajjTopics = {
           "Our Lord! Give us good in this world and good in the next world, and save us from the punishment of the Fire.",
         translationUrdu:
           "اے ہمارے رب! ہمیں دنیا میں بھی بھلائی دے اور آخرت میں بھی بھلائی دے اور ہمیں آگ کے عذاب سے بچا۔",
-        reference: "Qur'an 2:201",
-        source: "Qur'an",
       },
       {
         item: "Sa'i Duas:",
@@ -392,8 +349,6 @@ const hajjTopics = {
           "There is no deity except Allah, alone, without partner. To Him belongs dominion and to Him belongs praise, and He is over all things competent.",
         translationUrdu:
           "اللہ کے سوا کوئی معبود نہیں، وہ اکیلا ہے، اس کا کوئی شریک نہیں، اسی کی بادشاہت ہے اور اسی کے لیے تعریف ہے اور وہ ہر چیز پر قادر ہے۔",
-        reference: "Sahih Muslim 1218",
-        source: "Hadith",
       },
       {
         item: "Dua on Day of Arafat:",
@@ -407,8 +362,6 @@ const hajjTopics = {
           "There is no deity except Allah, alone, without partner. To Him belongs dominion and to Him belongs praise, and He is over all things competent.",
         translationUrdu:
           "اللہ کے سوا کوئی معبود نہیں، وہ اکیلا ہے، اس کا کوئی شریک نہیں، اسی کی بادشاہت ہے اور اسی کے لیے تعریف ہے اور وہ ہر چیز پر قادر ہے۔",
-        reference: "Sunan al-Tirmidhi 3585",
-        source: "Hadith",
       },
       {
         item: "Dua upon Returning Home:",
@@ -424,8 +377,6 @@ const hajjTopics = {
           "Returning, repenting, worshipping, and praising our Lord.",
         translationUrdu:
           "واپس لوٹنے والے ہیں، توبہ کرنے والے ہیں، عبادت کرنے والے ہیں، اپنے رب کی تعریف کرنے والے ہیں۔",
-        reference: "Sahih Muslim 1342",
-        source: "Hadith",
       },
     ],
   },
@@ -450,8 +401,6 @@ const hajjTopics = {
           "And We will surely test you with something of fear and hunger and a loss of wealth and lives and fruits, but give good tidings to the patient.",
         translationUrdu:
           "اور ہم ضرور تمہیں آزمائیں گے کسی قدر خوف اور بھوک سے اور مال اور جان اور پھلوں کی کمی سے، اور صبر کرنے والوں کو خوشخبری دے دو۔",
-        reference: "Qur'an 2:155",
-        source: "Qur'an",
       },
       {
         item: "Avoiding Disputes:",
@@ -467,8 +416,6 @@ const hajjTopics = {
           "So whoever has made Hajj obligatory upon himself therein, there is no sexual relations and no disobedience and no disputing during Hajj.",
         translationUrdu:
           "پس جس نے اپنے اوپر حج لازم کر لیا تو حج میں کوئی شہوانی بات نہیں، کوئی نافرمانی نہیں اور کوئی جھگڑا نہیں۔",
-        reference: "Qur'an 2:197",
-        source: "Qur'an",
       },
       {
         item: "Humility and Reflection:",
@@ -479,8 +426,6 @@ const hajjTopics = {
         itemAr: "التَّوَاضُعُ وَالتَّأَمُّلُ:",
         descriptionAr:
           "الاِقْتِرَابُ مِنَ الرِّحْلَةِ الْمُقَدَّسَةِ بِتَوَاضُعٍ حَقِيقِيٍّ وَتَأَمُّلٍ.",
-        reference: "Sahih al-Bukhari 1773",
-        source: "Hadith",
       },
       {
         item: "Sincere Repentance:",
@@ -491,8 +436,6 @@ const hajjTopics = {
         itemAr: "طَلَبُ الْمَغْفِرَةِ:",
         descriptionAr:
           "طَلَبُ مَغْفِرَةِ اللَّهِ وَرَحْمَتِهِ بِاسْتِمْرَارٍ؛ الْحَجُّ يَغْسِلُ جَمِيعَ الذُّنُوبِ السَّابِقَةِ.",
-        reference: "Sahih al-Bukhari 1521",
-        source: "Hadith",
       },
       {
         item: "Gratitude and Dhikr:",
@@ -503,8 +446,6 @@ const hajjTopics = {
         itemAr: "الشُّكْرُ وَالذِّكْرُ:",
         descriptionAr:
           "إِبْقَاءُ اللِّسَانِ رَطْبًا بِذِكْرِ اللَّهِ وَالتَّعْبِيرُ عَنِ الشُّكْرِ.",
-        reference: "Qur'an 2:200",
-        source: "Qur'an",
       },
     ],
   },
@@ -625,13 +566,6 @@ const HajjUmrah = () => {
               <p className="text-gray-700 mt-1 font-urdu text-xl italic">
                 {item.translationUrdu}
               </p>
-            )}
-            {/* Reference */}
-            {item.reference && item.source && (
-              <div className="text-lg text-gray-500 mt-1">
-                <span className="font-semibold">{item.source}:</span>{" "}
-                {item.reference}
-              </div>
             )}
           </div>
 

@@ -7,7 +7,8 @@ const TasksList = ({
   onTaskComplete,
   onTaskDelete,
   onViewProgress,
-  calculateProgress
+  calculateProgress,
+  isOwner = false
 }) => {
   return (
     <>
@@ -41,7 +42,7 @@ const TasksList = ({
                   {isTaskCompletedByUser ? 'Completed ✓' : 'Complete'}
                 </button>
 
-                {group.owner === user.id && (
+                {isOwner && (
                   <button
                     onClick={() => onTaskDelete(task._id)}
                     className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1.5 rounded-full hover:bg-red-50"

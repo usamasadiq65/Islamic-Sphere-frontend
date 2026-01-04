@@ -223,6 +223,7 @@ const zakatTopics = {
       }
     ]
   },
+  /* 'calculator' topic commented out - functionality merged into 'combined' calculator
   'calculator': {
     title: 'Zakat Calculator',
     titleAr: 'حَاسِبَةُ الزَّكَاةِ',
@@ -253,11 +254,12 @@ const zakatTopics = {
       ]
     }
   },
+  */
   'combined': {
-    title: 'Combined Assets Calculator',
-    titleAr: 'حَاسِبَةُ الأَصُولِ المُجَمَّعَةِ',
-    titleUrdu: 'مشترکہ اثاثوں کا حساب',
-    icon: <FaChartLine className="topic-icon" />,
+    title: 'Zakat Calculator',
+    titleAr: 'حَاسِبَةُ الزَّكَاةِ',
+    titleUrdu: 'زکات کیلکولیٹر',
+    icon: <FaCalculator className="topic-icon" />,
     content: {
       description: 'Calculate Zakat on combined assets (gold + silver + money) to check total eligibility',
       assets: [
@@ -783,7 +785,8 @@ useEffect(() => {
               </div>
             </div>
             <div className="topic-details">
-              {activeTopic === 'calculator' && (
+              {/* Old calculator section - functionality merged into 'combined' calculator */}
+              {false && activeTopic === 'calculator' && (
                 <div className="space-y-6">
                   <div className="mb-8">
                     <div className="flex items-center gap-4 mb-4">

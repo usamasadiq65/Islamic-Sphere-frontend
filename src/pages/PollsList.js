@@ -7,7 +7,8 @@ const PollsList = ({
   onVote,
   onDelete,
   onViewResults,
-  userVoted
+  userVoted,
+  isOwner = false
 }) => {
   // Add state to track selected options for each poll
   const [selectedOptions, setSelectedOptions] = useState({});
@@ -48,7 +49,7 @@ const PollsList = ({
               >
                 View Votes
               </button>
-              {group.owner === user.id && (
+              {isOwner && (
                 <button
                   onClick={() => onDelete(poll._id)}
                   className="text-red-500 hover:text-red-700 transition-colors duration-200 p-1.5 rounded-full hover:bg-red-50"
