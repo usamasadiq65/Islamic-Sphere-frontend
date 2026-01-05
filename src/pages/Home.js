@@ -353,7 +353,381 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Amazing Footer */}
+      {/* Platform Capabilities Section */}
+      <section className="stats-section">
+        <div className="stats-background">
+          <div className="stats-pattern"></div>
+        </div>
+        <div className="container">
+          <div className="stats-header">
+            <h2 className="stats-title">Platform <span>Capabilities</span></h2>
+            <p className="stats-subtitle">Discover the powerful features that make Islamic Sphere unique</p>
+          </div>
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-icon">
+                <i className="fas fa-video"></i>
+              </div>
+              <div className="stat-number"><i className="fas fa-broadcast-tower"></i></div>
+              <div className="stat-label">Live Q&A Sessions</div>
+              <div className="stat-description">Join live sessions with scholars via Google Meet with real-time interaction</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">
+                <i className="fas fa-robot"></i>
+              </div>
+              <div className="stat-number"><i className="fas fa-brain"></i></div>
+              <div className="stat-label">AI Meeting Insights</div>
+              <div className="stat-description">Auto-generated transcripts, summaries, key points & action items using OpenAI</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">
+                <i className="fas fa-users"></i>
+              </div>
+              <div className="stat-number"><i className="fas fa-users"></i></div>
+              <div className="stat-label">Faith Circles</div>
+              <div className="stat-description">Create study groups with tasks, polls, and real-time group chat</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">
+                <i className="fas fa-heart"></i>
+              </div>
+              <div className="stat-number"><i className="fas fa-chart-line"></i></div>
+              <div className="stat-label">Spiritual Tracking</div>
+              <div className="stat-description">Track your emotional & spiritual well-being with EmoVerse analytics</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Islamic Sphere Section */}
+      <section className="why-section">
+        <div className="container">
+          <div className="why-header">
+            <div className="why-badge">Why Choose Us</div>
+            <h2 className="why-title">Why <span>Islamic Sphere</span> Stands Out</h2>
+            <p className="why-subtitle">We address the common challenges Muslims face in their spiritual journey</p>
+          </div>
+
+          <div className="why-grid">
+            <div className="why-card problem">
+              <div className="why-card-icon">
+                <i className="fas fa-times-circle"></i>
+              </div>
+              <h3>The Challenge</h3>
+              <p>Fragmented resources, unreliable information, and lack of qualified guidance make it difficult for Muslims to find authentic Islamic knowledge and community support.</p>
+            </div>
+            <div className="why-card solution">
+              <div className="why-card-icon">
+                <i className="fas fa-check-circle"></i>
+              </div>
+              <h3>Our Solution</h3>
+              <p>A unified platform with verified scholars, personalized learning paths, and a supportive community - all in one place to nurture your faith journey.</p>
+            </div>
+          </div>
+
+          <div className="why-benefits">
+            <div className="benefit-item">
+              <div className="benefit-icon">
+                <i className="fas fa-shield-alt"></i>
+              </div>
+              <div className="benefit-content">
+                <h4>Verified Scholars</h4>
+                <p>All our scholars are certified with authentic Islamic credentials</p>
+              </div>
+            </div>
+            <div className="benefit-item">
+              <div className="benefit-icon">
+                <i className="fas fa-route"></i>
+              </div>
+              <div className="benefit-content">
+                <h4>Personalized Learning</h4>
+                <p>Customized paths based on your knowledge level and interests</p>
+              </div>
+            </div>
+            <div className="benefit-item">
+              <div className="benefit-icon">
+                <i className="fas fa-clock"></i>
+              </div>
+              <div className="benefit-content">
+                <h4>Flexible Schedule</h4>
+                <p>Learn at your own pace with on-demand and live content</p>
+              </div>
+            </div>
+            <div className="benefit-item">
+              <div className="benefit-icon">
+                <i className="fas fa-hands-helping"></i>
+              </div>
+              <div className="benefit-content">
+                <h4>Community Support</h4>
+                <p>Connect with like-minded Muslims from around the world</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="how-it-works-section">
+        <div className="container">
+          <div className="how-header">
+            <h2 className="how-title">How It <span>Works</span></h2>
+            <p className="how-subtitle">Start your spiritual journey in three simple steps</p>
+          </div>
+
+          <div className="how-steps">
+            <div className="how-step">
+              <div className="step-number">01</div>
+              <div className="step-content">
+                <div className="step-icon">
+                  <i className="fas fa-user-plus"></i>
+                </div>
+                <h3>Create Your Account</h3>
+                <p>Sign up for free and create your personal profile to start your journey</p>
+              </div>
+              <div className="step-connector"></div>
+            </div>
+            <div className="how-step">
+              <div className="step-number">02</div>
+              <div className="step-content">
+                <div className="step-icon">
+                  <i className="fas fa-compass"></i>
+                </div>
+                <h3>Explore Features</h3>
+                <p>Discover Faith Route, join Faith Circles, and connect with scholars</p>
+              </div>
+              <div className="step-connector"></div>
+            </div>
+            <div className="how-step">
+              <div className="step-number">03</div>
+              <div className="step-content">
+                <div className="step-icon">
+                  <i className="fas fa-chart-line"></i>
+                </div>
+                <h3>Grow Spiritually</h3>
+                <p>Track your progress, attend live sessions, and strengthen your faith</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="testimonials-section">
+        <div className="testimonials-background">
+          <div className="testimonials-pattern"></div>
+        </div>
+        <div className="container">
+          <div className="testimonials-header">
+            <h2 className="testimonials-title">What Our <span>Community</span> Says</h2>
+            <p className="testimonials-subtitle">Hear from Muslims who have transformed their spiritual journey with us</p>
+          </div>
+
+          <div className="testimonials-grid">
+            <div className="testimonial-card">
+              <div className="testimonial-quote">
+                <i className="fas fa-quote-left"></i>
+              </div>
+              <p className="testimonial-text">Islamic Sphere has transformed my learning. The Faith Route feature keeps me motivated daily!</p>
+              <div className="testimonial-author">
+                <div className="author-avatar">
+                  <i className="fas fa-user"></i>
+                </div>
+                <div className="author-info">
+                  <h4>Ahmed Hassan</h4>
+                  <span>Member since 2024</span>
+                </div>
+              </div>
+              <div className="testimonial-rating">
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+              </div>
+            </div>
+
+            <div className="testimonial-card featured">
+              <div className="testimonial-quote">
+                <i className="fas fa-quote-left"></i>
+              </div>
+              <p className="testimonial-text">The Q&A sessions helped me understand topics I've struggled with for years. Amazing community!</p>
+              <div className="testimonial-author">
+                <div className="author-avatar">
+                  <i className="fas fa-user"></i>
+                </div>
+                <div className="author-info">
+                  <h4>Fatima Al-Zahra</h4>
+                  <span>Member since 2023</span>
+                </div>
+              </div>
+              <div className="testimonial-rating">
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-quote">
+                <i className="fas fa-quote-left"></i>
+              </div>
+              <p className="testimonial-text">As a busy professional, the flexibility is incredible. EmoVerse perfectly tracks my spiritual well-being.</p>
+              <div className="testimonial-author">
+                <div className="author-avatar">
+                  <i className="fas fa-user"></i>
+                </div>
+                <div className="author-info">
+                  <h4>Omar Malik</h4>
+                  <span>Member since 2024</span>
+                </div>
+              </div>
+              <div className="testimonial-rating">
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star"></i>
+                <i className="fas fa-star-half-alt"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* AI-Powered Recall Integration Section */}
+      <section className="faq-section recall-section">
+        <div className="container">
+          <div className="faq-header">
+            <h2 className="faq-title">AI-Powered <span>Meeting Intelligence</span></h2>
+            <p className="faq-subtitle">Experience seamless session recording and AI-generated insights with Recall AI & OpenAI integration</p>
+          </div>
+
+          <div className="recall-flow">
+            <div className="recall-step">
+              <div className="recall-step-icon">
+                <i className="fas fa-video"></i>
+              </div>
+              <div className="recall-step-content">
+                <h3>1. Join Live Session</h3>
+                <p>Connect to scholar-led Q&A sessions via Google Meet. Our AI bot automatically joins to assist.</p>
+              </div>
+            </div>
+
+            <div className="recall-connector">
+              <i className="fas fa-long-arrow-alt-right"></i>
+            </div>
+
+            <div className="recall-step">
+              <div className="recall-step-icon">
+                <i className="fas fa-microphone-alt"></i>
+              </div>
+              <div className="recall-step-content">
+                <h3>2. Audio Recording</h3>
+                <p>Recall AI records the entire session audio, capturing every word from scholars and participants.</p>
+              </div>
+            </div>
+
+            <div className="recall-connector">
+              <i className="fas fa-long-arrow-alt-right"></i>
+            </div>
+
+            <div className="recall-step">
+              <div className="recall-step-icon">
+                <i className="fas fa-file-alt"></i>
+              </div>
+              <div className="recall-step-content">
+                <h3>3. Transcript Generation</h3>
+                <p>Audio is converted to accurate text transcripts, preserving the complete discussion for reference.</p>
+              </div>
+            </div>
+
+            <div className="recall-connector">
+              <i className="fas fa-long-arrow-alt-right"></i>
+            </div>
+
+            <div className="recall-step">
+              <div className="recall-step-icon">
+                <i className="fas fa-brain"></i>
+              </div>
+              <div className="recall-step-content">
+                <h3>4. AI Insights</h3>
+                <p>OpenAI analyzes transcripts to generate summaries, key points, and action items automatically.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="recall-features">
+            <div className="recall-feature-card">
+              <div className="recall-feature-icon">
+                <i className="fas fa-clipboard-list"></i>
+              </div>
+              <h4>Meeting Summary</h4>
+              <p>Get a concise overview of the entire session, highlighting main topics discussed and conclusions reached.</p>
+            </div>
+            <div className="recall-feature-card">
+              <div className="recall-feature-icon">
+                <i className="fas fa-lightbulb"></i>
+              </div>
+              <h4>Key Points</h4>
+              <p>AI extracts the most important insights and learnings from the session for quick review.</p>
+            </div>
+            <div className="recall-feature-card">
+              <div className="recall-feature-icon">
+                <i className="fas fa-tasks"></i>
+              </div>
+              <h4>Action Items</h4>
+              <p>Automatically identified follow-up tasks and recommendations based on session content.</p>
+            </div>
+            <div className="recall-feature-card">
+              <div className="recall-feature-icon">
+                <i className="fas fa-scroll"></i>
+              </div>
+              <h4>Full Transcript</h4>
+              <p>Complete searchable transcript of the session for detailed study and reference.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section className="final-cta-section">
+        <div className="final-cta-background">
+          <div className="cta-pattern"></div>
+          <div className="cta-glow"></div>
+        </div>
+        <div className="container">
+          <div className="final-cta-content">
+            <h2>Ready to Begin Your <span>Spiritual Journey</span>?</h2>
+            <p>Start your journey today with AI-powered learning and authentic Islamic guidance</p>
+            <div className="final-cta-buttons">
+              <Link to="/signup" className="cta-primary-btn">
+                <span>Get Started Free</span>
+                <i className="fas fa-arrow-right"></i>
+              </Link>
+              <Link to="/about" className="cta-secondary-btn">
+                <span>Learn More</span>
+                <i className="fas fa-info-circle"></i>
+              </Link>
+            </div>
+            <div className="cta-trust-badges">
+              <div className="trust-badge">
+                <i className="fas fa-shield-alt"></i>
+                <span>Secure Platform</span>
+              </div>
+              <div className="trust-badge">
+                <i className="fas fa-check-circle"></i>
+                <span>Verified Scholars</span>
+              </div>
+              <div className="trust-badge">
+                <i className="fas fa-globe"></i>
+                <span>Global Community</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <footer className="amazing-footer">
         <div className="footer-waves">
           <div className="wave wave1"></div>
