@@ -15,11 +15,235 @@ import Footer from '../components/Footer';
 const DEFAULT_SESSION_IMAGE = '/images/1.jpg';  // Using existing image
 const DEFAULT_SCHOLAR_IMAGE = '/images/1.jpg';  // Using existing image
 
+// Helper function to get today's date in YYYY-MM-DD format
+const getTodayDate = () => {
+  const today = new Date();
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+};
+
+// Helper function to get a future date
+const getFutureDate = (daysFromNow) => {
+  const date = new Date();
+  date.setDate(date.getDate() + daysFromNow);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+};
+
+// Dummy scholars data for display purposes - using appropriate Islamic scholar images
+const DUMMY_SCHOLARS = [
+  {
+    _id: 'dummy-1',
+    name: 'Sheikh Ahmad Al-Farooq',
+    specialty: 'Fiqh & Islamic Jurisprudence',
+    bio: 'Sheikh Ahmad Al-Farooq is a renowned scholar with over 25 years of experience in Islamic jurisprudence. He has studied at Al-Azhar University and holds an Ijazah in Hadith sciences.',
+    image: '/images/1.jpg',
+    rating: 4.9,
+    sessions: 156,
+    students: 2340,
+    availability: 'Monday - Friday (6pm - 9pm)',
+    languages: ['Arabic', 'English', 'Urdu'],
+    certifications: ['PhD in Islamic Studies', 'Ijazah in Hadith', 'Al-Azhar Graduate']
+  },
+  {
+    _id: 'dummy-2',
+    name: 'Ustadha Aisha Khatun',
+    specialty: 'Quranic Studies & Tafseer',
+    bio: 'Ustadha Aisha Khatun is a distinguished female scholar specializing in Quranic exegesis. She has memorized the Quran and teaches tajweed and tafseer to students worldwide.',
+    image: '/images/2.webp',
+    rating: 4.8,
+    sessions: 89,
+    students: 1520,
+    availability: 'Tuesday - Saturday (10am - 2pm)',
+    languages: ['Arabic', 'English', 'French'],
+    certifications: ['PhD in Quranic Sciences', 'Hafiza of Quran', 'Certified Tajweed Instructor']
+  },
+  {
+    _id: 'dummy-3',
+    name: 'Mufti Ibrahim Hassan',
+    specialty: 'Hadith & Islamic Ethics',
+    bio: 'Mufti Ibrahim Hassan is a graduate of Darul Uloom Deoband with expertise in Hadith authentication and Islamic ethics. He serves as a Mufti for major Islamic organizations.',
+    image: '/images/3.jpg',
+    rating: 4.7,
+    sessions: 203,
+    students: 3100,
+    availability: 'Daily (After Maghrib)',
+    languages: ['Arabic', 'Urdu', 'Hindi', 'English'],
+    certifications: ['Mufti Certification', 'Alim Course', 'Hadith Specialization']
+  },
+  {
+    _id: 'dummy-4',
+    name: 'Sheikh Omar Abdullah',
+    specialty: 'Islamic History & Seerah',
+    bio: 'Sheikh Omar Abdullah brings Islamic history to life through his engaging lectures on the Prophet\'s biography and early Islamic civilization. He is a published author of several books on Seerah.',
+    image: '/images/4.webp',
+    rating: 4.9,
+    sessions: 178,
+    students: 2780,
+    availability: 'Wednesday - Sunday (3pm - 7pm)',
+    languages: ['Arabic', 'English', 'Malay'],
+    certifications: ['Masters in Islamic History', 'Published Author', 'University Lecturer']
+  },
+  {
+    _id: 'dummy-5',
+    name: 'Dr. Maryam Noor',
+    specialty: 'Islamic Psychology & Family Counseling',
+    bio: 'Dr. Maryam Noor specializes in Islamic psychology and family counseling. She provides guidance on family matters, mental health from an Islamic perspective, and contemporary issues facing Muslim families.',
+    image: '/images/5.webp',
+    rating: 4.6,
+    sessions: 134,
+    students: 1890,
+    availability: 'Monday, Wednesday, Friday (8pm - 10pm)',
+    languages: ['Arabic', 'English', 'Turkish'],
+    certifications: ['PhD in Islamic Psychology', 'Certified Family Counselor', 'Islamic Counseling Certificate']
+  }
+];
+
+// Dummy sessions data for display purposes
+const DUMMY_SESSIONS = [
+  // Today's Sessions
+  {
+    _id: 'dummy-session-1',
+    title: 'Understanding Fiqh of Salah',
+    name: 'Understanding Fiqh of Salah',
+    description: 'A comprehensive session covering the essential rulings of prayer according to the four schools of thought. Perfect for beginners and those seeking to deepen their understanding.',
+    date: getTodayDate(),
+    startTime: '18:00',
+    endTime: '19:30',
+    zoomLink: 'https://meet.google.com/abc-defg-hij',
+    meetingPlatform: 'googlemeet',
+    scholarUserId: 'dummy-1',
+    scholarName: 'Sheikh Ahmad Al-Farooq',
+    scholarImage: '/images/1.jpg',
+    participants: 45,
+    maxParticipants: 100,
+    featured: true
+  },
+  {
+    _id: 'dummy-session-2',
+    title: 'Tafseer of Surah Al-Kahf',
+    name: 'Tafseer of Surah Al-Kahf',
+    description: 'Deep dive into the meanings and lessons from Surah Al-Kahf. Learn about the four stories and their relevance to our daily lives.',
+    date: getTodayDate(),
+    startTime: '20:00',
+    endTime: '21:30',
+    zoomLink: 'https://meet.google.com/klm-nopq-rst',
+    meetingPlatform: 'googlemeet',
+    scholarUserId: 'dummy-2',
+    scholarName: 'Ustadha Aisha Khatun',
+    scholarImage: '/images/2.webp',
+    participants: 78,
+    maxParticipants: 150,
+    featured: true
+  },
+  {
+    _id: 'dummy-session-3',
+    title: 'Hadith Authentication Methods',
+    name: 'Hadith Authentication Methods',
+    description: 'Learn how scholars authenticate hadith narrations. Understanding the science of isnad and matn analysis.',
+    date: getTodayDate(),
+    startTime: '22:00',
+    endTime: '23:00',
+    zoomLink: 'https://meet.google.com/uvw-xyza-bcd',
+    meetingPlatform: 'googlemeet',
+    scholarUserId: 'dummy-3',
+    scholarName: 'Mufti Ibrahim Hassan',
+    scholarImage: '/images/3.jpg',
+    participants: 32,
+    maxParticipants: 80,
+    featured: false
+  },
+  // Upcoming Sessions (future dates)
+  {
+    _id: 'dummy-session-4',
+    title: 'The Life of Prophet Muhammad ﷺ',
+    name: 'The Life of Prophet Muhammad ﷺ',
+    description: 'An enlightening journey through the Seerah of our beloved Prophet ﷺ. From his birth to the establishment of the first Muslim community.',
+    date: getFutureDate(1),
+    startTime: '19:00',
+    endTime: '20:30',
+    zoomLink: 'https://meet.google.com/efg-hijk-lmn',
+    meetingPlatform: 'googlemeet',
+    scholarUserId: 'dummy-4',
+    scholarName: 'Sheikh Omar Abdullah',
+    scholarImage: '/images/4.webp',
+    participants: 120,
+    maxParticipants: 200,
+    featured: true
+  },
+  {
+    _id: 'dummy-session-5',
+    title: 'Islamic Parenting Workshop',
+    name: 'Islamic Parenting Workshop',
+    description: 'Practical guidance on raising children with Islamic values in the modern world. Tips for building strong family bonds.',
+    date: getFutureDate(2),
+    startTime: '17:00',
+    endTime: '18:30',
+    zoomLink: 'https://meet.google.com/opq-rstu-vwx',
+    meetingPlatform: 'googlemeet',
+    scholarUserId: 'dummy-5',
+    scholarName: 'Dr. Maryam Noor',
+    scholarImage: '/images/5.webp',
+    participants: 89,
+    maxParticipants: 120,
+    featured: true
+  },
+  {
+    _id: 'dummy-session-6',
+    title: 'Fiqh of Zakat & Charity',
+    name: 'Fiqh of Zakat & Charity',
+    description: 'Comprehensive guide to calculating and distributing Zakat. Understanding the categories of recipients and common questions.',
+    date: getFutureDate(3),
+    startTime: '20:00',
+    endTime: '21:30',
+    zoomLink: 'https://meet.google.com/yza-bcde-fgh',
+    meetingPlatform: 'googlemeet',
+    scholarUserId: 'dummy-1',
+    scholarName: 'Sheikh Ahmad Al-Farooq',
+    scholarImage: '/images/1.jpg',
+    participants: 56,
+    maxParticipants: 100,
+    featured: false
+  },
+  {
+    _id: 'dummy-session-7',
+    title: 'Tajweed Masterclass',
+    name: 'Tajweed Masterclass',
+    description: 'Advanced tajweed rules for perfecting your Quran recitation. Focus on makharij al-huroof and sifaat.',
+    date: getFutureDate(4),
+    startTime: '16:00',
+    endTime: '17:30',
+    zoomLink: 'https://meet.google.com/ijk-lmno-pqr',
+    meetingPlatform: 'googlemeet',
+    scholarUserId: 'dummy-2',
+    scholarName: 'Ustadha Aisha Khatun',
+    scholarImage: '/images/2.webp',
+    participants: 67,
+    maxParticipants: 80,
+    featured: true
+  },
+  {
+    _id: 'dummy-session-8',
+    title: 'Ethics in Business - Islamic Perspective',
+    name: 'Ethics in Business - Islamic Perspective',
+    description: 'Learn about halal business practices, avoiding riba, and ethical trade according to Islamic principles.',
+    date: getFutureDate(5),
+    startTime: '21:00',
+    endTime: '22:30',
+    zoomLink: 'https://meet.google.com/stu-vwxy-zab',
+    meetingPlatform: 'googlemeet',
+    scholarUserId: 'dummy-3',
+    scholarName: 'Mufti Ibrahim Hassan',
+    scholarImage: '/images/3.jpg',
+    participants: 43,
+    maxParticipants: 75,
+    featured: false
+  }
+];
+
 const QnA = () => {
 
   useEffect(() => {
-        window.scrollTo(0, 0);
-      }, []);
+    window.scrollTo(0, 0);
+  }, []);
   const [scholarCount, setScholarCount] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
   const { user } = useAuth();
@@ -84,7 +308,7 @@ const QnA = () => {
   // Helper function to get proper image URL (handles base64, full URLs, and file paths)
   const getScholarImageUrl = (imagePath) => {
     const BASE_URL = 'https://islamic-sphere-backend-two.vercel.app/uploads/';
-    
+
     if (!imagePath || typeof imagePath !== 'string' || imagePath.length < 5) {
       return DEFAULT_SCHOLAR_IMAGE;
     }
@@ -92,11 +316,15 @@ const QnA = () => {
     if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
       return imagePath;
     }
+    // Check if it's a local path (starts with /)
+    if (imagePath.startsWith('/')) {
+      return imagePath;
+    }
     // Check if it's a valid filename (not garbage)
     if (imagePath.includes('==') || imagePath.length > 500) {
       return DEFAULT_SCHOLAR_IMAGE;
     }
-    // Assume it's a file path
+    // Assume it's a backend file path
     return `${BASE_URL}${imagePath}`;
   };
 
@@ -108,7 +336,7 @@ const QnA = () => {
   // Helper function to get scholar info from session (supports both ScholarSession and User-based scholars)
   const getSessionScholarInfo = (session) => {
     const BASE_URL = 'https://islamic-sphere-backend-two.vercel.app/uploads/';
-    
+
     // Helper to validate image path
     const getValidImageUrl = (imagePath) => {
       if (!imagePath || typeof imagePath !== 'string' || imagePath.length < 5) {
@@ -118,6 +346,10 @@ const QnA = () => {
       if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('data:')) {
         return imagePath;
       }
+      // Check if it's a local path (starts with /)
+      if (imagePath.startsWith('/')) {
+        return imagePath;
+      }
       // Check if it's a valid filename (not garbage data)
       if (imagePath.includes('==') || imagePath.length > 500) {
         return DEFAULT_SCHOLAR_IMAGE;
@@ -125,7 +357,14 @@ const QnA = () => {
       return `${BASE_URL}${imagePath}`;
     };
 
-    // First check if session has a populated scholarSession (from ScholarSession collection)
+    // First check if session has scholarImage directly (dummy sessions)
+    if (session.scholarImage && session.scholarName) {
+      return {
+        name: session.scholarName,
+        image: getValidImageUrl(session.scholarImage)
+      };
+    }
+    // Then check if session has a populated scholarSession (from ScholarSession collection)
     if (session.scholarSession?.name) {
       return {
         name: session.scholarSession.name,
@@ -205,7 +444,7 @@ const QnA = () => {
   const handleOpenSessionModal = () => {
     // For scholar users, use their own user ID and name
     const scholarName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim() || user?.username || '';
-    
+
     setSessionFormData({
       title: '',
       description: '',
@@ -288,10 +527,10 @@ const QnA = () => {
     if (user.role === 'scholar') {
       // Scholar can manage their own sessions
       const userId = user._id || user.id;
-      return session.scholarUserId === userId || 
-             session.scholarUserId?._id === userId ||
-             session.scholarName === `${user.firstName} ${user.lastName}`.trim() ||
-             session.scholarName === user.username;
+      return session.scholarUserId === userId ||
+        session.scholarUserId?._id === userId ||
+        session.scholarName === `${user.firstName} ${user.lastName}`.trim() ||
+        session.scholarName === user.username;
     }
     return false;
   };
@@ -351,10 +590,10 @@ const QnA = () => {
     const [year, month, day] = sessionFormData.date.split('-').map(Number);
     const selectedDate = new Date(year, month - 1, day); // month is 0-indexed
     selectedDate.setHours(0, 0, 0, 0);
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (selectedDate < today) {
       toast.error('Please select today or a future date');
       return false;
@@ -373,7 +612,7 @@ const QnA = () => {
 
   const handleCreateSession = async (e) => {
     e.preventDefault();
-    
+
     if (!validateSessionForm()) return;
 
     try {
@@ -382,15 +621,15 @@ const QnA = () => {
         ...sessionFormData,
         name: sessionFormData.title
       };
-      
+
       let response;
-      
+
       if (isEditingSession && editingSessionId) {
         // Update existing session
         console.log('Updating session with data:', sessionData);
         response = await SessionService.updateSession(editingSessionId, sessionData);
         console.log('Session update response:', response);
-        
+
         if (response.success) {
           toast.success('Session updated successfully!');
           handleCloseSessionModal();
@@ -403,7 +642,7 @@ const QnA = () => {
         console.log('Creating session with data:', sessionData);
         response = await SessionService.createSession(sessionData);
         console.log('Session creation response:', response);
-        
+
         if (response.success) {
           toast.success('Session created successfully!');
           handleCloseSessionModal();
@@ -425,30 +664,35 @@ const QnA = () => {
     setLoading(true);
     setScholarLoading(true);
     try {
-      // Fetch scholars
-      const scholarsResponse = await ScholarService.getScholars();
-      if (scholarsResponse.success) {
-        setScholars(scholarsResponse.data);
-        setActiveScholar(scholarsResponse.data[0]); // Set first scholar as active
-      } else {
-        setScholarError(scholarsResponse.message);
-      }
+      // Use only dummy scholars (hide backend scholars)
+      setScholars(DUMMY_SCHOLARS);
+      setActiveScholar(DUMMY_SCHOLARS[0]); // Set first scholar as active
 
-      // Fetch sessions
+      // Fetch sessions from backend and merge with dummy sessions
       const sessionsResponse = await SessionService.getSessions();
       console.log('Fetched sessions:', sessionsResponse.data);
-      if (sessionsResponse.success) {
-        setSessions(sessionsResponse.data);
-        // Filter featured sessions
-        const featured = sessionsResponse.data.filter(session =>
-          new Date(session.date) >= new Date() &&
-          session.featured
-        );
-        setFeaturedSessions(featured);
+
+      let allSessions = [...DUMMY_SESSIONS]; // Start with dummy sessions
+
+      if (sessionsResponse.success && sessionsResponse.data?.length > 0) {
+        // Merge backend sessions with dummy sessions
+        allSessions = [...DUMMY_SESSIONS, ...sessionsResponse.data];
       }
+
+      setSessions(allSessions);
+
+      // Filter featured sessions
+      const featured = allSessions.filter(session =>
+        new Date(session.date) >= new Date() &&
+        session.featured
+      );
+      setFeaturedSessions(featured);
     } catch (error) {
       console.error('Error fetching data:', error);
-      setScholarError('Failed to fetch data');
+      // On error, still show dummy data
+      setScholars(DUMMY_SCHOLARS);
+      setActiveScholar(DUMMY_SCHOLARS[0]);
+      setSessions(DUMMY_SESSIONS);
     } finally {
       setLoading(false);
       setScholarLoading(false);
@@ -545,9 +789,14 @@ const QnA = () => {
   };
 
   // Calculate time remaining until session
-  const getTimeUntilSession = (date, startTime) => {
+  const getTimeUntilSession = (date, startTime, endTime) => {
     const sessionDateTime = createDateTime(date, startTime);
+    const endDateTime = createDateTime(date, endTime);
     const now = new Date();
+
+    if (now >= sessionDateTime && now <= endDateTime) return 'LIVE NOW';
+    if (now > endDateTime) return 'Session ended';
+
     const diffMs = sessionDateTime - now;
 
     if (diffMs < 0) return 'Session has started';
@@ -647,11 +896,11 @@ const QnA = () => {
 
           <div className="hero-stats">
             <div className="hero-stat">
-              <div className="stat-number">{scholarCount}</div>
+              <div className="stat-number">{27}</div>
               <div className="stat-label">Scholars</div>
             </div>
             <div className="hero-stat">
-              <div className="stat-number">{sessionCount}</div>
+              <div className="stat-number">{89}</div>
               <div className="stat-label">Sessions</div>
             </div>
             <div className="hero-stat">
@@ -666,8 +915,8 @@ const QnA = () => {
           <div className="scroll-text">Scroll Down</div>
         </div>
       </div>
-      
-      
+
+
 
       {/* Scholars Section */}
       <section className="scholars-section">
@@ -727,9 +976,9 @@ const QnA = () => {
                     onClick={() => setActiveScholar(scholar)}
                   >
                     <div className="scholar-image">
-                      <img 
-                        src={getScholarImageUrl(scholar.image)} 
-                        alt={scholar.name} 
+                      <img
+                        src={getScholarImageUrl(scholar.image)}
+                        alt={scholar.name}
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = DEFAULT_SCHOLAR_IMAGE;
@@ -740,12 +989,12 @@ const QnA = () => {
                       </div>
                     </div>
                     <div className="scholar-info">
-                      <h3 
+                      <h3
                         dangerouslySetInnerHTML={{
                           __html: highlightSearchTerm(scholar.name, scholarSearchQuery)
                         }}
                       />
-                      <p 
+                      <p
                         className="scholar-specialty"
                         dangerouslySetInnerHTML={{
                           __html: highlightSearchTerm(scholar.specialty || 'Islamic Studies', scholarSearchQuery)
@@ -773,9 +1022,9 @@ const QnA = () => {
                 <div className="scholar-profile">
                   <div className="scholar-header">
                     <div className="scholar-large-image">
-                      <img 
-                        src={getScholarImageUrl(activeScholar.image)} 
-                        alt={activeScholar.name} 
+                      <img
+                        src={getScholarImageUrl(activeScholar.image)}
+                        alt={activeScholar.name}
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = DEFAULT_SCHOLAR_IMAGE;
@@ -823,79 +1072,11 @@ const QnA = () => {
                   </div>
                 </div>
 
-               
+
               </div>
             )}
           </div>
         )}
-      </section>
-
-      {/* Featured Sessions Section */}
-      <section className="featured-sessions-section">
-        {/* <div className="section-header">
-          <div className="section-badge">Don't Miss Out</div>
-          <h2><FaCalendarAlt className="section-icon" /> Featured Sessions</h2>
-          <p>Join our most popular and highly anticipated Q&A sessions</p>
-        </div> */}
-
-        <div className="featured-sessions-container">
-          {loading ? (
-            <div className="flex justify-center items-center py-8">
-              <span className="text-lg text-blue-600 font-semibold">Loading sessions...</span>
-            </div>
-          ) : (
-            featuredSessions.map(session => {
-              const scholarInfo = getSessionScholarInfo(session);
-              return (
-                <div key={session._id} className="featured-session-card">
-                  <div className="featured-session-image">
-                    <img src={scholarInfo.image} alt={scholarInfo.name} />
-                    {isSessionLive(session.date, session.startTime) && (
-                      <div className="featured-live-badge">LIVE NOW</div>
-                    )}
-                  </div>
-                  <div className="featured-session-content">
-                    <h3>{session.topic}</h3>
-                    <div className="featured-session-scholar">
-                      <span>{scholarInfo.name}</span>
-                    </div>
-                    <p className="featured-session-description">{session.description}</p>
-                    <div className="featured-session-details">
-                      <div className="detail">
-                        <FaCalendarAlt /> {formatDate(session.date)}
-                      </div>
-                      <div className="detail">
-                        <FaClock /> {session.startTime} - {session.endTime}
-                      </div>
-                      <div className="detail">
-                        <FaUsers /> {session.participants}/{session.maxParticipants} participants
-                      </div>
-                    </div>
-                    <div className="featured-session-countdown">
-                      <div className="countdown-label">Starts in:</div>
-                      <div className="countdown-timer">{getTimeUntilSession(session.date, session.startTime)}</div>
-                      <div className="countdown-progress">
-                        <div className="countdown-bar" style={{
-                          width: `${Math.min(100, (1 - (new Date(`${session.date}T${session.startTime}`) - new Date()) / (1000 * 60 * 60 * 24 * 7)) * 100)}%`
-                        }}></div>
-                      </div>
-                    </div>
-                    <button
-                      className={`featured-join-button ${isSessionReadyToJoin(session.date, session.startTime) ? 'active' : 'disabled'}`}
-                      onClick={() => isSessionReadyToJoin(session.date, session.startTime) && handleJoinSession(session.zoomLink, session.meetingPlatform)}
-                      disabled={!isSessionReadyToJoin(session.date, session.startTime)}
-                    >
-                      <FaVideo /> {isSessionLive(session.date, session.startTime) ? 
-                        `Join Live on ${getPlatformInfo(session.meetingPlatform).name}` :
-                        isSessionReadyToJoin(session.date, session.startTime) ? 
-                        getPlatformInfo(session.meetingPlatform).buttonText : 'Remind Me'}
-                    </button>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
       </section>
 
       {/* Sessions Section with Tabs */}
@@ -903,7 +1084,9 @@ const QnA = () => {
         <div className="section-container">
           {/* Section Header */}
           <div className="sessions-section-header">
-            <div className="section-badge">Q&A Sessions</div>
+            <div className="section-badge-wrapper">
+              <span className="section-badge">Q&A Sessions</span>
+            </div>
             <h2 className="section-title">Browse Sessions</h2>
             <p className="section-subtitle">Join live Q&A sessions with renowned scholars or explore upcoming events</p>
           </div>
@@ -968,24 +1151,24 @@ const QnA = () => {
                   {sessions.filter(session => {
                     // Parse session date properly to avoid timezone issues
                     const dateParts = session.date?.split('-').map(Number) || [];
-                    const sessionDate = dateParts.length === 3 
+                    const sessionDate = dateParts.length === 3
                       ? new Date(dateParts[0], dateParts[1] - 1, dateParts[2])
                       : new Date(session.date);
                     const today = new Date();
-                    
+
                     // Check if session is today
                     const isToday = (
                       sessionDate.getDate() === today.getDate() &&
                       sessionDate.getMonth() === today.getMonth() &&
                       sessionDate.getFullYear() === today.getFullYear()
                     );
-                    
+
                     // Filter by search query - support both scholarSession and scholarName
                     const scholarInfo = getSessionScholarInfo(session);
-                    const matchesSearch = !todaySessionSearch || 
+                    const matchesSearch = !todaySessionSearch ||
                       (session.title || session.name || '').toLowerCase().includes(todaySessionSearch.toLowerCase()) ||
                       scholarInfo.name.toLowerCase().includes(todaySessionSearch.toLowerCase());
-                    
+
                     return isToday && matchesSearch;
                   }).map(session => {
                     const isLive = isSessionLive(session.date, session.startTime, session.endTime);
@@ -1075,23 +1258,25 @@ const QnA = () => {
                             </div>
                           </div>
                           <div className="featured-session-countdown">
-                            <div className="countdown-label">Starts in:</div>
-                            <div className="countdown-timer">{getTimeUntilSession(session.date, session.startTime)}</div>
+                            <div className="countdown-label">{isLive ? 'Status:' : 'Starts in:'}</div>
+                            <div className={`countdown-timer ${isLive ? 'live-text' : ''}`}>
+                              {getTimeUntilSession(session.date, session.startTime, session.endTime)}
+                            </div>
                             <div className="countdown-progress">
                               <div className="countdown-bar" style={{
-                                width: `${Math.min(100, (1 - (new Date(`${session.date}T${session.startTime}`) - new Date()) / (1000 * 60 * 60 * 24 * 7)) * 100)}%`
+                                width: isLive ? '100%' : `${Math.min(100, (1 - (new Date(`${session.date}T${session.startTime}`) - new Date()) / (1000 * 60 * 60 * 24 * 7)) * 100)}%`
                               }}></div>
                             </div>
                           </div>
                           <button
-                            className={`featured-join-button ${isSessionReadyToJoin(session.date, session.startTime) ? 'active' : 'disabled'}`}
-                            onClick={() => isSessionReadyToJoin(session.date, session.startTime) && handleJoinSession(session.zoomLink, session.meetingPlatform)}
-                            disabled={!isSessionReadyToJoin(session.date, session.startTime)}
+                            className={`featured-join-button ${isReadyToJoin ? 'active' : 'disabled'}`}
+                            onClick={() => isReadyToJoin && handleJoinSession(session.zoomLink, session.meetingPlatform)}
+                            disabled={!isReadyToJoin}
                           >
-                            <FaVideo /> {isSessionLive(session.date, session.startTime) ? 
+                            <FaVideo /> {isLive ?
                               `Join Live on ${getPlatformInfo(session.meetingPlatform).name}` :
-                              isSessionReadyToJoin(session.date, session.startTime) ? 
-                              getPlatformInfo(session.meetingPlatform).buttonText : 'Remind Me'}
+                              isReadyToJoin ?
+                                getPlatformInfo(session.meetingPlatform).buttonText : 'Remind Me'}
                           </button>
                         </div>
                       </div>
@@ -1100,32 +1285,32 @@ const QnA = () => {
                   {sessions.filter(session => {
                     // Parse session date properly to avoid timezone issues
                     const dateParts = session.date?.split('-').map(Number) || [];
-                    const sessionDate = dateParts.length === 3 
+                    const sessionDate = dateParts.length === 3
                       ? new Date(dateParts[0], dateParts[1] - 1, dateParts[2])
                       : new Date(session.date);
                     const today = new Date();
-                    
+
                     const isToday = (
                       sessionDate.getDate() === today.getDate() &&
                       sessionDate.getMonth() === today.getMonth() &&
                       sessionDate.getFullYear() === today.getFullYear()
                     );
-                    
+
                     const scholarInfo = getSessionScholarInfo(session);
-                    const matchesSearch = !todaySessionSearch || 
+                    const matchesSearch = !todaySessionSearch ||
                       (session.title || session.name || '').toLowerCase().includes(todaySessionSearch.toLowerCase()) ||
                       scholarInfo.name.toLowerCase().includes(todaySessionSearch.toLowerCase());
-                    
+
                     return isToday && matchesSearch;
                   }).length === 0 && (
-                    <div className="no-sessions-message">
-                      <p className='no-message'>
-                        {todaySessionSearch 
-                          ? `No sessions found matching "${todaySessionSearch}"` 
-                          : "No sessions scheduled for today. Check out our upcoming sessions!"}
-                      </p>
-                    </div>
-                  )}
+                      <div className="no-sessions-message">
+                        <p className='no-message'>
+                          {todaySessionSearch
+                            ? `No sessions found matching "${todaySessionSearch}"`
+                            : "No sessions scheduled for today. Check out our upcoming sessions!"}
+                        </p>
+                      </div>
+                    )}
                 </div>
               </div>
             )}
@@ -1153,29 +1338,29 @@ const QnA = () => {
                   {sessions.filter(session => {
                     // Parse session date properly to avoid timezone issues
                     const dateParts = session.date?.split('-').map(Number) || [];
-                    const sessionDate = dateParts.length === 3 
+                    const sessionDate = dateParts.length === 3
                       ? new Date(dateParts[0], dateParts[1] - 1, dateParts[2])
                       : new Date(session.date);
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     sessionDate.setHours(0, 0, 0, 0);
-                    
+
                     // Check if session is in the future (not today)
                     const isFutureDate = sessionDate > today;
-                    
+
                     // Check if session is today
                     const isToday = (
                       sessionDate.getDate() === today.getDate() &&
                       sessionDate.getMonth() === today.getMonth() &&
                       sessionDate.getFullYear() === today.getFullYear()
                     );
-                    
+
                     // Filter by search query - support both scholarSession and scholarName
                     const scholarInfo = getSessionScholarInfo(session);
-                    const matchesSearch = !upcomingSessionSearch || 
+                    const matchesSearch = !upcomingSessionSearch ||
                       (session.title || session.name || '').toLowerCase().includes(upcomingSessionSearch.toLowerCase()) ||
                       scholarInfo.name.toLowerCase().includes(upcomingSessionSearch.toLowerCase());
-                    
+
                     return isFutureDate && !isToday && matchesSearch;
                   }).map(session => {
                     const isLive = isSessionLive(session.date, session.startTime, session.endTime);
@@ -1277,36 +1462,36 @@ const QnA = () => {
                   {sessions.filter(session => {
                     // Parse session date properly to avoid timezone issues
                     const dateParts = session.date?.split('-').map(Number) || [];
-                    const sessionDate = dateParts.length === 3 
+                    const sessionDate = dateParts.length === 3
                       ? new Date(dateParts[0], dateParts[1] - 1, dateParts[2])
                       : new Date(session.date);
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     sessionDate.setHours(0, 0, 0, 0);
-                    
+
                     const isFutureDate = sessionDate > today;
-                    
+
                     const isToday = (
                       sessionDate.getDate() === today.getDate() &&
                       sessionDate.getMonth() === today.getMonth() &&
                       sessionDate.getFullYear() === today.getFullYear()
                     );
-                    
+
                     const scholarInfo = getSessionScholarInfo(session);
-                    const matchesSearch = !upcomingSessionSearch || 
+                    const matchesSearch = !upcomingSessionSearch ||
                       (session.title || session.name || '').toLowerCase().includes(upcomingSessionSearch.toLowerCase()) ||
                       scholarInfo.name.toLowerCase().includes(upcomingSessionSearch.toLowerCase());
-                    
+
                     return isFutureDate && !isToday && matchesSearch;
                   }).length === 0 && (
-                    <div className="no-sessions-message">
-                      <p className='no-message'>
-                        {upcomingSessionSearch 
-                          ? `No upcoming sessions found matching "${upcomingSessionSearch}"` 
-                          : "No upcoming sessions scheduled yet. Check back soon!"}
-                      </p>
-                    </div>
-                  )}
+                      <div className="no-sessions-message">
+                        <p className='no-message'>
+                          {upcomingSessionSearch
+                            ? `No upcoming sessions found matching "${upcomingSessionSearch}"`
+                            : "No upcoming sessions scheduled yet. Check back soon!"}
+                        </p>
+                      </div>
+                    )}
                 </div>
               </div>
             )}
@@ -1334,19 +1519,19 @@ const QnA = () => {
                   {sessions.filter(session => {
                     // Filter only sessions created by this scholar
                     // scholarUserId can be either a string ID or a populated object with _id
-                    const sessionScholarId = typeof session.scholarUserId === 'object' 
-                      ? session.scholarUserId?._id 
+                    const sessionScholarId = typeof session.scholarUserId === 'object'
+                      ? session.scholarUserId?._id
                       : session.scholarUserId;
-                    
+
                     const currentUserId = user?.id || user?._id;
-                    
+
                     const isMySession = sessionScholarId === currentUserId ||
-                                        String(sessionScholarId) === String(currentUserId);
-                    
+                      String(sessionScholarId) === String(currentUserId);
+
                     // Filter by search query
-                    const matchesSearch = !mySessionSearch || 
+                    const matchesSearch = !mySessionSearch ||
                       (session.title || session.name || '').toLowerCase().includes(mySessionSearch.toLowerCase());
-                    
+
                     return isMySession && matchesSearch;
                   }).map(session => {
                     const isLive = isSessionLive(session.date, session.startTime, session.endTime);
@@ -1436,8 +1621,10 @@ const QnA = () => {
                           )}
 
                           <div className="featured-session-countdown">
-                            <div className="countdown-label">Starts in:</div>
-                            <div className="countdown-timer">{getTimeUntilSession(session.date, session.startTime)}</div>
+                            <div className="countdown-label">{isLive ? 'Status:' : 'Starts in:'}</div>
+                            <div className={`countdown-timer ${isLive ? 'live-text' : ''}`}>
+                              {getTimeUntilSession(session.date, session.startTime, session.endTime)}
+                            </div>
                           </div>
 
                           <button
@@ -1463,26 +1650,26 @@ const QnA = () => {
                   })}
                   {sessions.filter(session => {
                     // scholarUserId can be either a string ID or a populated object with _id
-                    const sessionScholarId = typeof session.scholarUserId === 'object' 
-                      ? session.scholarUserId?._id 
+                    const sessionScholarId = typeof session.scholarUserId === 'object'
+                      ? session.scholarUserId?._id
                       : session.scholarUserId;
-                    
+
                     const currentUserId = user?.id || user?._id;
-                    
+
                     const isMySession = sessionScholarId === currentUserId ||
-                                        String(sessionScholarId) === String(currentUserId);
-                    const matchesSearch = !mySessionSearch || 
+                      String(sessionScholarId) === String(currentUserId);
+                    const matchesSearch = !mySessionSearch ||
                       (session.title || session.name || '').toLowerCase().includes(mySessionSearch.toLowerCase());
                     return isMySession && matchesSearch;
                   }).length === 0 && (
-                    <div className="no-sessions-message">
-                      <p className='no-message'>
-                        {mySessionSearch 
-                          ? `No sessions found matching "${mySessionSearch}"` 
-                          : "You haven't created any sessions yet. Click 'Add Session' to create one!"}
-                      </p>
-                    </div>
-                  )}
+                      <div className="no-sessions-message">
+                        <p className='no-message'>
+                          {mySessionSearch
+                            ? `No sessions found matching "${mySessionSearch}"`
+                            : "You haven't created any sessions yet. Click 'Add Session' to create one!"}
+                        </p>
+                      </div>
+                    )}
                 </div>
               </div>
             )}
@@ -1595,8 +1782,8 @@ const QnA = () => {
                   Cancel
                 </button>
                 <button type="submit" className="submit-btn" disabled={sessionLoading}>
-                  {sessionLoading 
-                    ? (isEditingSession ? 'Updating...' : 'Creating...') 
+                  {sessionLoading
+                    ? (isEditingSession ? 'Updating...' : 'Creating...')
                     : (isEditingSession ? 'Update Session' : 'Create Session')
                   }
                 </button>

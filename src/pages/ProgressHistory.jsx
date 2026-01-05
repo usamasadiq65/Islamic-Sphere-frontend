@@ -3,7 +3,298 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
-import GroupService from '../apis/group';
+// import GroupService from '../apis/group'; // Commented out - using dummy data
+
+// Dummy data for progress history
+const DUMMY_GROUP_NAME = 'Quran Memorization Group';
+
+const DUMMY_PROGRESS_SUMMARY = {
+  today: {
+    completed: 3,
+    total: 5,
+    completionRate: 60
+  },
+  week: {
+    completed: 18,
+    total: 25,
+    completionRate: 72
+  },
+  month: {
+    completed: 65,
+    total: 100,
+    completionRate: 65
+  },
+  year: {
+    completed: 245,
+    total: 365,
+    completionRate: 67
+  }
+};
+
+const DUMMY_PROGRESS_DATA = {
+  today: {
+    stats: {
+      total: 5,
+      completed: 3,
+      missed: 2,
+      completionRate: 60
+    },
+    records: [
+      {
+        taskTitle: 'Fajr Prayer',
+        taskDescription: 'Perform Fajr prayer on time',
+        status: 'completed',
+        createdAt: new Date().toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Quran Recitation',
+        taskDescription: 'Recite 2 pages of Quran',
+        status: 'completed',
+        createdAt: new Date().toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Dhikr After Salah',
+        taskDescription: 'Complete morning and evening adhkar',
+        status: 'completed',
+        createdAt: new Date().toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Tahajjud Prayer',
+        taskDescription: 'Wake up for night prayer',
+        status: 'missed',
+        createdAt: new Date().toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Islamic Study',
+        taskDescription: 'Study hadith for 30 minutes',
+        status: 'missed',
+        createdAt: new Date().toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      }
+    ]
+  },
+  week: {
+    stats: {
+      total: 25,
+      completed: 18,
+      missed: 7,
+      completionRate: 72
+    },
+    records: [
+      {
+        taskTitle: 'Fajr Prayer',
+        taskDescription: 'Perform Fajr prayer on time',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Fajr Prayer',
+        taskDescription: 'Perform Fajr prayer on time',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Fajr Prayer',
+        taskDescription: 'Perform Fajr prayer on time',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Fajr Prayer',
+        taskDescription: 'Perform Fajr prayer on time',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Fajr Prayer',
+        taskDescription: 'Perform Fajr prayer on time',
+        status: 'missed',
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Quran Recitation',
+        taskDescription: 'Recite 2 pages of Quran',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Quran Recitation',
+        taskDescription: 'Recite 2 pages of Quran',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Quran Recitation',
+        taskDescription: 'Recite 2 pages of Quran',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Quran Recitation',
+        taskDescription: 'Recite 2 pages of Quran',
+        status: 'missed',
+        createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Dhikr After Salah',
+        taskDescription: 'Complete morning and evening adhkar',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Dhikr After Salah',
+        taskDescription: 'Complete morning and evening adhkar',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Dhikr After Salah',
+        taskDescription: 'Complete morning and evening adhkar',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Dhikr After Salah',
+        taskDescription: 'Complete morning and evening adhkar',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Tahajjud Prayer',
+        taskDescription: 'Wake up for night prayer',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Tahajjud Prayer',
+        taskDescription: 'Wake up for night prayer',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Tahajjud Prayer',
+        taskDescription: 'Wake up for night prayer',
+        status: 'missed',
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Tahajjud Prayer',
+        taskDescription: 'Wake up for night prayer',
+        status: 'missed',
+        createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Islamic Study',
+        taskDescription: 'Study hadith for 30 minutes',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Islamic Study',
+        taskDescription: 'Study hadith for 30 minutes',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Islamic Study',
+        taskDescription: 'Study hadith for 30 minutes',
+        status: 'missed',
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Charity',
+        taskDescription: 'Give sadaqah or help someone',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Charity',
+        taskDescription: 'Give sadaqah or help someone',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Charity',
+        taskDescription: 'Give sadaqah or help someone',
+        status: 'missed',
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Dua for Parents',
+        taskDescription: 'Make special dua for parents',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      },
+      {
+        taskTitle: 'Dua for Parents',
+        taskDescription: 'Make special dua for parents',
+        status: 'completed',
+        createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+        group: { name: 'Quran Memorization Group' }
+      }
+    ]
+  },
+  month: {
+    stats: {
+      total: 100,
+      completed: 65,
+      missed: 35,
+      completionRate: 65
+    },
+    records: [] // Will use week records as sample
+  },
+  year: {
+    stats: {
+      total: 365,
+      completed: 245,
+      missed: 120,
+      completionRate: 67
+    },
+    records: [] // Will use week records as sample
+  },
+  all: {
+    stats: {
+      total: 500,
+      completed: 340,
+      missed: 160,
+      completionRate: 68
+    },
+    records: [] // Will use week records as sample
+  }
+};
+
+// Copy week records to other periods for demonstration
+DUMMY_PROGRESS_DATA.month.records = [...DUMMY_PROGRESS_DATA.week.records];
+DUMMY_PROGRESS_DATA.year.records = [...DUMMY_PROGRESS_DATA.week.records];
+DUMMY_PROGRESS_DATA.all.records = [...DUMMY_PROGRESS_DATA.week.records];
 
 const ProgressHistory = () => {
   const { user } = useAuth();
@@ -21,13 +312,45 @@ const ProgressHistory = () => {
   const [progressSearch, setProgressSearch] = useState('');
 
   useEffect(() => {
-    if (user && user.id && groupId) {
+    if (user && user.id) {
       loadGroupInfo();
       loadProgressHistory();
     }
   }, [user, groupId]);
 
-  // Load group info
+  // Load group info - USING DUMMY DATA
+  const loadGroupInfo = async () => {
+    try {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 300));
+      setGroupName(DUMMY_GROUP_NAME);
+    } catch (error) {
+      console.error('Error loading group info:', error);
+    }
+  };
+
+  // Load progress history - USING DUMMY DATA
+  const loadProgressHistory = async (period = progressPeriod) => {
+    try {
+      setProgressLoading(true);
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Set dummy data based on period
+      setProgressData(DUMMY_PROGRESS_DATA[period]);
+      setProgressSummary(DUMMY_PROGRESS_SUMMARY);
+
+    } catch (error) {
+      console.error('Error loading progress:', error);
+      toast.error('Failed to load progress history');
+    } finally {
+      setProgressLoading(false);
+    }
+  };
+
+  // COMMENTED OUT: Original API implementation
+  /*
   const loadGroupInfo = async () => {
     try {
       const response = await GroupService.getGroupDetails(groupId);
@@ -39,7 +362,6 @@ const ProgressHistory = () => {
     }
   };
 
-  // Load progress history
   const loadProgressHistory = async (period = progressPeriod) => {
     try {
       setProgressLoading(true);
@@ -61,6 +383,7 @@ const ProgressHistory = () => {
       setProgressLoading(false);
     }
   };
+  */
 
   // Handle period change
   const handlePeriodChange = (newPeriod) => {
@@ -81,10 +404,10 @@ const ProgressHistory = () => {
   }
 
   return (
-    <div className="min-h-screen bg-primary-600">
+    <div className="min-h-screen bg-primary-600 bg-gradient-to-b from-primary-700 to-primary-800">
       <Navbar />
-      
-      <div className="max-w-7xl mx-auto px-6 pt-24 pb-8">
+
+      <div className="max-w-[95%] mx-auto px-4 pt-32 pb-8">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-lg border-2 border-indigo-100 mb-6">
           <div className="p-6 md:p-8">
@@ -121,11 +444,10 @@ const ProgressHistory = () => {
                 <button
                   key={period}
                   onClick={() => handlePeriodChange(period)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition duration-150 ${
-                    progressPeriod === period
-                      ? 'bg-indigo-600 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition duration-150 ${progressPeriod === period
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
                 >
                   {period.charAt(0).toUpperCase() + period.slice(1)}
                 </button>
@@ -150,8 +472,8 @@ const ProgressHistory = () => {
                       <div className="text-3xl font-bold text-blue-800">{progressSummary.today?.completed || 0}</div>
                       <div className="text-xs text-blue-500 mb-2">of {progressSummary.today?.total || 0} tasks</div>
                       <div className="bg-blue-200 rounded-full h-2.5">
-                        <div 
-                          className="bg-blue-600 rounded-full h-2.5 transition-all duration-500" 
+                        <div
+                          className="bg-blue-600 rounded-full h-2.5 transition-all duration-500"
                           style={{ width: `${progressSummary.today?.completionRate || 0}%` }}
                         ></div>
                       </div>
@@ -168,8 +490,8 @@ const ProgressHistory = () => {
                       <div className="text-3xl font-bold text-green-800">{progressSummary.week?.completed || 0}</div>
                       <div className="text-xs text-green-500 mb-2">of {progressSummary.week?.total || 0} tasks</div>
                       <div className="bg-green-200 rounded-full h-2.5">
-                        <div 
-                          className="bg-green-600 rounded-full h-2.5 transition-all duration-500" 
+                        <div
+                          className="bg-green-600 rounded-full h-2.5 transition-all duration-500"
                           style={{ width: `${progressSummary.week?.completionRate || 0}%` }}
                         ></div>
                       </div>
@@ -186,8 +508,8 @@ const ProgressHistory = () => {
                       <div className="text-3xl font-bold text-purple-800">{progressSummary.month?.completed || 0}</div>
                       <div className="text-xs text-purple-500 mb-2">of {progressSummary.month?.total || 0} tasks</div>
                       <div className="bg-purple-200 rounded-full h-2.5">
-                        <div 
-                          className="bg-purple-600 rounded-full h-2.5 transition-all duration-500" 
+                        <div
+                          className="bg-purple-600 rounded-full h-2.5 transition-all duration-500"
                           style={{ width: `${progressSummary.month?.completionRate || 0}%` }}
                         ></div>
                       </div>
@@ -204,8 +526,8 @@ const ProgressHistory = () => {
                       <div className="text-3xl font-bold text-orange-800">{progressSummary.year?.completed || 0}</div>
                       <div className="text-xs text-orange-500 mb-2">of {progressSummary.year?.total || 0} tasks</div>
                       <div className="bg-orange-200 rounded-full h-2.5">
-                        <div 
-                          className="bg-orange-600 rounded-full h-2.5 transition-all duration-500" 
+                        <div
+                          className="bg-orange-600 rounded-full h-2.5 transition-all duration-500"
                           style={{ width: `${progressSummary.year?.completionRate || 0}%` }}
                         ></div>
                       </div>
@@ -251,7 +573,7 @@ const ProgressHistory = () => {
                       <i className="fas fa-history text-indigo-600 mr-2"></i>
                       Task History
                     </h3>
-                    
+
                     {/* Progress Search Bar */}
                     <div className="relative mb-6">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -329,13 +651,12 @@ const ProgressHistory = () => {
                           return taskGroups.map((taskGroup, index) => (
                             <div
                               key={index}
-                              className={`p-5 rounded-xl border-2 transition duration-150 hover:shadow-md ${
-                                taskGroup.completedCount > 0 && taskGroup.missedCount === 0
-                                  ? 'border-green-200 bg-green-50'
-                                  : taskGroup.completedCount === 0
+                              className={`p-5 rounded-xl border-2 transition duration-150 hover:shadow-md ${taskGroup.completedCount > 0 && taskGroup.missedCount === 0
+                                ? 'border-green-200 bg-green-50'
+                                : taskGroup.completedCount === 0
                                   ? 'border-red-200 bg-red-50'
                                   : 'border-yellow-200 bg-yellow-50'
-                              }`}
+                                }`}
                             >
                               <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                                 <div className="flex-1">
@@ -374,14 +695,13 @@ const ProgressHistory = () => {
                                   </div>
                                   <div className="text-xs text-gray-500">Success Rate</div>
                                   <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                                    <div 
-                                      className={`h-2 rounded-full transition-all duration-300 ${
-                                        Math.round((taskGroup.completedCount / (taskGroup.completedCount + taskGroup.missedCount)) * 100) >= 70
-                                          ? 'bg-green-500'
-                                          : Math.round((taskGroup.completedCount / (taskGroup.completedCount + taskGroup.missedCount)) * 100) >= 40
+                                    <div
+                                      className={`h-2 rounded-full transition-all duration-300 ${Math.round((taskGroup.completedCount / (taskGroup.completedCount + taskGroup.missedCount)) * 100) >= 70
+                                        ? 'bg-green-500'
+                                        : Math.round((taskGroup.completedCount / (taskGroup.completedCount + taskGroup.missedCount)) * 100) >= 40
                                           ? 'bg-yellow-500'
                                           : 'bg-red-500'
-                                      }`}
+                                        }`}
                                       style={{ width: `${Math.round((taskGroup.completedCount / (taskGroup.completedCount + taskGroup.missedCount)) * 100)}%` }}
                                     ></div>
                                   </div>

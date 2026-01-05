@@ -284,7 +284,7 @@ const GroupDetails = () => {
 
   const handleCreatePoll = async (e) => {
     e.preventDefault();
-    
+
     const pollData = {
       title: newPoll.question,
       options: newPoll.options.map(opt => opt),
@@ -365,19 +365,19 @@ const GroupDetails = () => {
     // Optimistically update the UI
     setTasks(prev => prev.map(t => {
       if (t._id !== taskId) return t;
-      
+
       let newUsersCompleted = [...(t.usersCompleted || [])];
-      
+
       if (isCurrentlyCompleted) {
         // Remove user from completed list
-        newUsersCompleted = newUsersCompleted.filter(uid => 
+        newUsersCompleted = newUsersCompleted.filter(uid =>
           uid !== user.id && uid._id !== user.id
         );
       } else {
         // Add user to completed list
         newUsersCompleted.push(user.id);
       }
-      
+
       return { ...t, usersCompleted: newUsersCompleted };
     }));
 
@@ -415,20 +415,20 @@ const GroupDetails = () => {
     // Optimistically update the UI
     setPolls(prev => prev.map(p => {
       if (p._id !== pollId) return p;
-      
+
       return {
         ...p,
         options: p.options.map(opt => {
           // Remove user's vote from all options first
-          let newVotes = (opt.votes || []).filter(v => 
+          let newVotes = (opt.votes || []).filter(v =>
             v !== user.id && v._id !== user.id
           );
-          
+
           // Add vote to the selected option (if not already voted on it)
           if (opt._id === optionId && !alreadyVotedThisOption) {
             newVotes = [...newVotes, user.id];
           }
-          
+
           return { ...opt, votes: newVotes };
         })
       };
@@ -461,7 +461,7 @@ const GroupDetails = () => {
     const tempId = 'temp-' + Date.now();
     const taskToAdd = { ...selectedBuiltInTask };
     const deadlineToAdd = builtInTaskDeadline;
-    
+
     const optimisticTask = {
       _id: tempId,
       title: taskToAdd.title,
@@ -483,10 +483,10 @@ const GroupDetails = () => {
     setShowBuiltInTaskModal(false);
 
     // API call runs silently in background
-    GroupService.addTask(groupId, { 
-      ...taskToAdd, 
+    GroupService.addTask(groupId, {
+      ...taskToAdd,
       deadline: deadlineToAdd,
-      isBuiltIn: true 
+      isBuiltIn: true
     })
       .then(serverTask => {
         // Replace optimistic task with real task (no full reload)
@@ -623,7 +623,7 @@ const GroupDetails = () => {
 
     // Store task for potential rollback
     const taskToDelete = tasks.find(t => t._id === taskId);
-    
+
     // Immediately remove from UI
     setTasks(prev => prev.filter(t => t._id !== taskId));
     toast.success('Task deleted successfully');
@@ -646,35 +646,35 @@ const GroupDetails = () => {
     }
   };
 
- const handleDeletePoll = async (pollId) => {
-  if (!window.confirm('Are you sure you want to delete this poll?')) {
-    return;
-  }
-
-  // Store poll for potential rollback
-  const pollToDelete = polls.find(p => p._id === pollId);
-  
-  // Immediately remove from UI
-  setPolls(prev => prev.filter(p => p._id !== pollId));
-  toast.success('Poll deleted successfully');
-
-  // If it's an optimistic poll (temp ID), no need to call API
-  if (pollId.toString().startsWith('temp-')) {
-    return;
-  }
-
-  // API call runs silently in background for real polls
-  try {
-    await GroupService.deletePoll(groupId, pollId);
-  } catch (error) {
-    // Rollback on failure
-    if (pollToDelete) {
-      setPolls(prev => [...prev, pollToDelete]);
+  const handleDeletePoll = async (pollId) => {
+    if (!window.confirm('Are you sure you want to delete this poll?')) {
+      return;
     }
-    toast.error('Failed to delete poll');
-    console.error(error);
-  }
-};
+
+    // Store poll for potential rollback
+    const pollToDelete = polls.find(p => p._id === pollId);
+
+    // Immediately remove from UI
+    setPolls(prev => prev.filter(p => p._id !== pollId));
+    toast.success('Poll deleted successfully');
+
+    // If it's an optimistic poll (temp ID), no need to call API
+    if (pollId.toString().startsWith('temp-')) {
+      return;
+    }
+
+    // API call runs silently in background for real polls
+    try {
+      await GroupService.deletePoll(groupId, pollId);
+    } catch (error) {
+      // Rollback on failure
+      if (pollToDelete) {
+        setPolls(prev => [...prev, pollToDelete]);
+      }
+      toast.error('Failed to delete poll');
+      console.error(error);
+    }
+  };
 
   const userVoted = (poll) => {
     if (!poll || !poll.options || !user || !user.id) return false;
@@ -801,8 +801,8 @@ const GroupDetails = () => {
   // Check if current user is any type of owner (super or additional)
   const isOwner = () => {
     if (!group || !user) return false;
-    return group.owner === user.id || 
-           (group.owners && group.owners.some(o => o._id === user.id));
+    return group.owner === user.id ||
+      (group.owners && group.owners.some(o => o._id === user.id));
   };
 
   // Check if a member is the super owner
@@ -965,7 +965,7 @@ const GroupDetails = () => {
       isBuiltIn: task.isBuiltIn || false,
       builtInTaskId: task.id || null
     };
-    
+
     // Optimistic update - add temp task immediately
     const tempId = 'temp-' + Date.now();
     const optimisticTask = {
@@ -973,10 +973,10 @@ const GroupDetails = () => {
       ...taskData,
       createdAt: new Date().toISOString()
     };
-    
+
     setUserTaskList(prev => [optimisticTask, ...prev]);
     toast.success('Task added to your personal list!');
-    
+
     // API call in background
     GroupService.addToUserTaskList(taskData)
       .then(response => {
@@ -1002,7 +1002,7 @@ const GroupDetails = () => {
     const removedTask = userTaskList.find(t => t._id === taskId);
     setUserTaskList(prev => prev.filter(t => t._id !== taskId));
     toast.success('Task removed from your list');
-    
+
     // API call in background
     GroupService.removeFromUserTaskList(taskId)
       .catch(() => {
@@ -1047,8 +1047,8 @@ const GroupDetails = () => {
 
 
   const isDuplicateOption = (options, newValue, currentIndex) => {
-    return options.some((option, index) => 
-      index !== currentIndex && 
+    return options.some((option, index) =>
+      index !== currentIndex &&
       option.toLowerCase().trim() === newValue.toLowerCase().trim()
     );
   };
@@ -1056,7 +1056,7 @@ const GroupDetails = () => {
 
 
   return (
-    <div className="min-h-screen bg-primary-600">
+    <div className="min-h-screen bg-gradient-to-br from-primary-700 to-primary-800">
       <Navbar />
       <div className="pt-16 px-4 sm:px-6 lg:px-8 max-w-[1920px] mx-auto">
         {loading ? (
@@ -1111,7 +1111,7 @@ const GroupDetails = () => {
                           </div>
                         ) : null}
                       </div>
-                      
+
                       {/* Action buttons for owners */}
                       {isOwner() && member._id !== user.id && !isMemberSuperOwner(member._id) && (
                         <div className="flex items-center gap-1">
@@ -1251,7 +1251,7 @@ const GroupDetails = () => {
                           const activeTasks = tasks
                             .filter(task => new Date(task.deadline) > new Date())
                             .filter(task => task.title.toLowerCase().includes(taskTabSearch.toLowerCase()));
-                          
+
                           if (activeTasks.length === 0) {
                             return (
                               <div className="text-center py-8">
@@ -1267,7 +1267,7 @@ const GroupDetails = () => {
                               </div>
                             );
                           }
-                          
+
                           return (
                             <TasksList
                               tasks={activeTasks}
@@ -1326,7 +1326,7 @@ const GroupDetails = () => {
                           const activePolls = polls
                             .filter(poll => new Date(poll.deadline) > new Date())
                             .filter(poll => poll.title.toLowerCase().includes(pollTabSearch.toLowerCase()));
-                          
+
                           if (activePolls.length === 0) {
                             return (
                               <div className="text-center py-8">
@@ -1342,7 +1342,7 @@ const GroupDetails = () => {
                               </div>
                             );
                           }
-                          
+
                           return (
                             <PollsList
                               polls={activePolls}
@@ -1360,13 +1360,13 @@ const GroupDetails = () => {
                     </div>
                   ) : (
                     <GroupChat
-  apiKey={"szew68z5xj78"}
-  userId={user.id}
-  userName={user.firstName || user.username || user.email}
-  groupId={groupId}
-  groupName={group.name}
-  memberIds={group.members.map(member => member._id)}
-/>
+                      apiKey={"szew68z5xj78"}
+                      userId={user.id}
+                      userName={user.firstName || user.username || user.email}
+                      groupId={groupId}
+                      groupName={group.name}
+                      memberIds={group.members.map(member => member._id)}
+                    />
                   )}
                 </div>
               </div>
@@ -1495,7 +1495,7 @@ const GroupDetails = () => {
                   </label>
                   <input
                     type="datetime-local"
-                    min={new Date(new Date().setHours(0,0,0,0)).toISOString().slice(0, 16)}
+                    min={new Date(new Date().setHours(0, 0, 0, 0)).toISOString().slice(0, 16)}
                     value={newTask.deadline}
                     onChange={(e) => setNewTask({ ...newTask, deadline: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-200 focus:border-primary-300"
@@ -1539,180 +1539,179 @@ const GroupDetails = () => {
         </div>
       )}
 
-     {/* Built-in Task Modal */}
-{showBuiltInTaskModal && (
-  <div className="fixed inset-0 bg-black/50 flex items-start justify-center pt-32 z-50 overflow-y-auto">
-    <div className="bg-white rounded-xl w-[90%] max-w-[600px] mb-32 shadow-lg border-2 border-primary-100">
-      <div className="p-8">
-        <h2 className="text-2xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">
-          {selectedBuiltInTask && !builtInTasks.find(t => t.id === selectedBuiltInTask.id) 
-            ? 'Add Task from My List' 
-            : 'Add Built-in Task'}
-        </h2>
+      {/* Built-in Task Modal */}
+      {showBuiltInTaskModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-start justify-center pt-32 z-50 overflow-y-auto">
+          <div className="bg-white rounded-xl w-[90%] max-w-[600px] mb-32 shadow-lg border-2 border-primary-100">
+            <div className="p-8">
+              <h2 className="text-2xl font-bold text-gray-900 border-b border-gray-200 pb-4 mb-6">
+                {selectedBuiltInTask && !builtInTasks.find(t => t.id === selectedBuiltInTask.id)
+                  ? 'Add Task from My List'
+                  : 'Add Built-in Task'}
+              </h2>
 
-        {/* Show selected task from user's list (not in builtInTasks) */}
-        {selectedBuiltInTask && !builtInTasks.find(t => t.id === selectedBuiltInTask.id) && (
-          <div className="mb-6 p-4 border-2 border-green-500 bg-green-50 rounded-lg">
-            <div className="flex flex-col gap-4">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="font-bold text-gray-900">{selectedBuiltInTask.title}</h3>
-                  <span className="px-2 py-0.5 bg-green-200 text-green-800 text-xs rounded-full">From My List</span>
+              {/* Show selected task from user's list (not in builtInTasks) */}
+              {selectedBuiltInTask && !builtInTasks.find(t => t.id === selectedBuiltInTask.id) && (
+                <div className="mb-6 p-4 border-2 border-green-500 bg-green-50 rounded-lg">
+                  <div className="flex flex-col gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-bold text-gray-900">{selectedBuiltInTask.title}</h3>
+                        <span className="px-2 py-0.5 bg-green-200 text-green-800 text-xs rounded-full">From My List</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{selectedBuiltInTask.description}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="datetime-local"
+                        min={(() => { const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); return now.toISOString().slice(0, 16); })()}
+                        value={builtInTaskDeadline}
+                        onChange={(e) => setBuiltInTaskDeadline(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                        required
+                      />
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (!builtInTaskDeadline) {
+                            toast.error('Please set a deadline');
+                            return;
+                          }
+                          submitBuiltInTask();
+                        }}
+                        className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+                      >
+                        Add Task
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedBuiltInTask(null);
+                          setBuiltInTaskDeadline('');
+                        }}
+                        className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-600">{selectedBuiltInTask.description}</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <input
-                  type="datetime-local"
-                  min={(() => { const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); return now.toISOString().slice(0, 16); })()}
-                  value={builtInTaskDeadline}
-                  onChange={(e) => setBuiltInTaskDeadline(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                  required
-                />
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (!builtInTaskDeadline) {
-                      toast.error('Please set a deadline');
-                      return;
-                    }
-                    submitBuiltInTask();
-                  }}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
-                >
-                  Add Task
-                </button>
+              )}
+
+              {/* Only show built-in tasks list if NO task from user's list is selected */}
+              {!(selectedBuiltInTask && !builtInTasks.find(t => t.id === selectedBuiltInTask.id)) && (
+                <>
+                  {/* Built-in Task Search Bar */}
+                  <div className="relative mb-4">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <i className="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search built-in tasks..."
+                      value={builtInTaskSearch}
+                      onChange={(e) => setBuiltInTaskSearch(e.target.value)}
+                      className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white text-sm transition-all duration-200 shadow-sm"
+                    />
+                    {builtInTaskSearch && (
+                      <button
+                        onClick={() => setBuiltInTaskSearch('')}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                      >
+                        <i className="fas fa-times-circle"></i>
+                      </button>
+                    )}
+                  </div>
+                  <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                    {builtInTasks
+                      .filter(task => task.title.toLowerCase().includes(builtInTaskSearch.toLowerCase()))
+                      .map(task => (
+                        <div
+                          key={task.id}
+                          className={`p-4 border-2 ${selectedBuiltInTask?.id === task.id
+                              ? 'border-primary-500 bg-primary-50'
+                              : 'border-gray-200 hover:border-primary-300 hover:bg-primary-50'
+                            } rounded-lg transition duration-150`}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <h3 className="font-bold text-gray-900">{task.title}</h3>
+                              <p className="text-sm text-gray-600 mt-1">{task.description}</p>
+                            </div>
+                            {selectedBuiltInTask?.id === task.id ? (
+                              <div className="ml-4 flex items-center space-x-2">
+                                <input
+                                  type="datetime-local"
+                                  min={(() => { const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); return now.toISOString().slice(0, 16); })()}
+                                  value={builtInTaskDeadline}
+                                  onChange={(e) => {
+                                    setBuiltInTaskDeadline(e.target.value);
+                                  }}
+                                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                  required
+                                />
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    if (!builtInTaskDeadline) {
+                                      toast.error('Please set a deadline');
+                                      return;
+                                    }
+                                    const deadlineDate = new Date(builtInTaskDeadline);
+                                    const today = new Date();
+                                    today.setHours(0, 0, 0, 0);
+                                    if (deadlineDate < today) {
+                                      toast.error('Cannot set deadline in the past');
+                                      return;
+                                    }
+                                    submitBuiltInTask();
+                                  }}
+                                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
+                                >
+                                  Add Task
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleAddToUserTaskList(selectedBuiltInTask);
+                                  }}
+                                  className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"
+                                  title="Save to My Task List"
+                                >
+                                  <i className="fas fa-bookmark"></i>
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => handleAddBuiltInTask(task)}
+                                className="px-4 py-2 text-primary-600 hover:bg-primary-100 rounded-lg text-sm font-medium"
+                              >
+                                Select
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </>
+              )}
+
+              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200 mt-6">
                 <button
                   onClick={() => {
+                    setShowBuiltInTaskModal(false);
                     setSelectedBuiltInTask(null);
                     setBuiltInTaskDeadline('');
+                    setBuiltInTaskSearch('');
                   }}
-                  className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm"
+                  className="px-6 py-2.5 border border-primary-200 text-primary-700 rounded-lg hover:bg-primary-50 hover:border-primary-300 transition duration-150 text-sm font-medium"
                 >
-                  Cancel
+                  Close
                 </button>
               </div>
             </div>
           </div>
-        )}
-
-        {/* Only show built-in tasks list if NO task from user's list is selected */}
-        {!(selectedBuiltInTask && !builtInTasks.find(t => t.id === selectedBuiltInTask.id)) && (
-        <>
-        {/* Built-in Task Search Bar */}
-        <div className="relative mb-4">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i className="fas fa-search text-gray-400"></i>
-          </div>
-          <input
-            type="text"
-            placeholder="Search built-in tasks..."
-            value={builtInTaskSearch}
-            onChange={(e) => setBuiltInTaskSearch(e.target.value)}
-            className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 focus:bg-white text-sm transition-all duration-200 shadow-sm"
-          />
-          {builtInTaskSearch && (
-            <button
-              onClick={() => setBuiltInTaskSearch('')}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-            >
-              <i className="fas fa-times-circle"></i>
-            </button>
-          )}
         </div>
-        <div className="space-y-4 max-h-[400px] overflow-y-auto">
-          {builtInTasks
-            .filter(task => task.title.toLowerCase().includes(builtInTaskSearch.toLowerCase()))
-            .map(task => (
-            <div
-              key={task.id}
-              className={`p-4 border-2 ${
-                selectedBuiltInTask?.id === task.id 
-                  ? 'border-primary-500 bg-primary-50' 
-                  : 'border-gray-200 hover:border-primary-300 hover:bg-primary-50'
-              } rounded-lg transition duration-150`}
-            >
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <h3 className="font-bold text-gray-900">{task.title}</h3>
-                  <p className="text-sm text-gray-600 mt-1">{task.description}</p>
-                </div>
-                {selectedBuiltInTask?.id === task.id ? (
-                  <div className="ml-4 flex items-center space-x-2">
-                    <input
-                      type="datetime-local"
-                      min={(() => { const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); return now.toISOString().slice(0, 16); })()}
-                      value={builtInTaskDeadline}
-                      onChange={(e) => {
-                        setBuiltInTaskDeadline(e.target.value);
-                      }}
-                      className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                      required
-                    />
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (!builtInTaskDeadline) {
-                          toast.error('Please set a deadline');
-                          return;
-                        }
-                        const deadlineDate = new Date(builtInTaskDeadline);
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        if (deadlineDate < today) {
-                          toast.error('Cannot set deadline in the past');
-                          return;
-                        }
-                        submitBuiltInTask();
-                      }}
-                      className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
-                    >
-                      Add Task
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleAddToUserTaskList(selectedBuiltInTask);
-                      }}
-                      className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"
-                      title="Save to My Task List"
-                    >
-                      <i className="fas fa-bookmark"></i>
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => handleAddBuiltInTask(task)}
-                    className="px-4 py-2 text-primary-600 hover:bg-primary-100 rounded-lg text-sm font-medium"
-                  >
-                    Select
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-        </>
-        )}
-
-        <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200 mt-6">
-          <button
-            onClick={() => {
-              setShowBuiltInTaskModal(false);
-              setSelectedBuiltInTask(null);
-              setBuiltInTaskDeadline('');
-              setBuiltInTaskSearch('');
-            }}
-            className="px-6 py-2.5 border border-primary-200 text-primary-700 rounded-lg hover:bg-primary-50 hover:border-primary-300 transition duration-150 text-sm font-medium"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+      )}
       {/* Create Poll Modal */}
       {showNewPollModal && (
         <div className="fixed inset-0 bg-black/50 flex items-start justify-center pt-32 z-50 overflow-y-auto">
@@ -1747,55 +1746,55 @@ const GroupDetails = () => {
                 </div>
 
 
-                
 
 
 
- {/* Update the options input handling */}
-<div className="space-y-3">
-  <label className="block text-sm font-bold text-gray-700 mb-2">
-    Options
-  </label>
-  {newPoll.options.map((option, index) => (
-    <div key={index} className="flex gap-2">
-      <div className="flex-1 relative">
-        <input
-          type="text"
-          value={option}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            if (isDuplicateOption(newPoll.options, newValue, index)) {
-              toast.error('This option already exists');
-              return;
-            }
-            const newOptions = [...newPoll.options];
-            newOptions[index] = newValue;
-            setNewPoll({ ...newPoll, options: newOptions });
-          }}
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-200 focus:border-primary-300"
-          placeholder={`Option ${index + 1}`}
-          required
-        />
-      </div>
-      {index > 1 && (
-        <button
-          type="button"
-          onClick={() => removePollOption(index)}
-          className="p-2 text-gray-400 hover:text-gray-500"
-        >
-          <i className="fas fa-times"></i>
-        </button>
-      )}
-    </div>
-  ))}
-  <button
-    type="button"
-    onClick={addPollOption}
-    className="text-primary-600 hover:text-primary-700 text-sm font-medium"
-  >
-    + Add Option
-  </button>
-</div>
+
+                {/* Update the options input handling */}
+                <div className="space-y-3">
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    Options
+                  </label>
+                  {newPoll.options.map((option, index) => (
+                    <div key={index} className="flex gap-2">
+                      <div className="flex-1 relative">
+                        <input
+                          type="text"
+                          value={option}
+                          onChange={(e) => {
+                            const newValue = e.target.value;
+                            if (isDuplicateOption(newPoll.options, newValue, index)) {
+                              toast.error('This option already exists');
+                              return;
+                            }
+                            const newOptions = [...newPoll.options];
+                            newOptions[index] = newValue;
+                            setNewPoll({ ...newPoll, options: newOptions });
+                          }}
+                          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-200 focus:border-primary-300"
+                          placeholder={`Option ${index + 1}`}
+                          required
+                        />
+                      </div>
+                      {index > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removePollOption(index)}
+                          className="p-2 text-gray-400 hover:text-gray-500"
+                        >
+                          <i className="fas fa-times"></i>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={addPollOption}
+                    className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                  >
+                    + Add Option
+                  </button>
+                </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">
                     Deadline
@@ -2102,70 +2101,70 @@ const GroupDetails = () => {
                 </div>
               ) : (
                 <>
-                {/* User Task List Search Bar */}
-                <div className="relative mb-4">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i className="fas fa-search text-gray-400"></i>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Search your tasks..."
-                    value={userTaskListSearch}
-                    onChange={(e) => setUserTaskListSearch(e.target.value)}
-                    className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:bg-white text-sm transition-all duration-200 shadow-sm"
-                  />
-                  {userTaskListSearch && (
-                    <button
-                      onClick={() => setUserTaskListSearch('')}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                    >
-                      <i className="fas fa-times-circle"></i>
-                    </button>
-                  )}
-                </div>
-                <div className="space-y-3 max-h-[400px] overflow-y-auto">
-                  {userTaskList
-                    .filter(task => task.title.toLowerCase().includes(userTaskListSearch.toLowerCase()))
-                    .map(task => (
-                    <div
-                      key={task._id}
-                      className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition duration-150"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-gray-900">{task.title}</h3>
-                            {task.isBuiltIn && (
-                              <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">
-                                Built-in
-                              </span>
-                            )}
-                            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
-                              {task.category}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-600 mt-1">{task.description}</p>
-                        </div>
-                        <div className="flex items-center gap-2 ml-4">
-                          <button
-                            onClick={() => handleUseTaskFromList(task)}
-                            className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"
-                            title="Use this task"
-                          >
-                            <i className="fas fa-plus mr-1"></i> Use
-                          </button>
-                          <button
-                            onClick={() => handleRemoveFromUserTaskList(task._id)}
-                            className="px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium"
-                            title="Remove from list"
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </div>
-                      </div>
+                  {/* User Task List Search Bar */}
+                  <div className="relative mb-4">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <i className="fas fa-search text-gray-400"></i>
                     </div>
-                  ))}
-                </div>
+                    <input
+                      type="text"
+                      placeholder="Search your tasks..."
+                      value={userTaskListSearch}
+                      onChange={(e) => setUserTaskListSearch(e.target.value)}
+                      className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:bg-white text-sm transition-all duration-200 shadow-sm"
+                    />
+                    {userTaskListSearch && (
+                      <button
+                        onClick={() => setUserTaskListSearch('')}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                      >
+                        <i className="fas fa-times-circle"></i>
+                      </button>
+                    )}
+                  </div>
+                  <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                    {userTaskList
+                      .filter(task => task.title.toLowerCase().includes(userTaskListSearch.toLowerCase()))
+                      .map(task => (
+                        <div
+                          key={task._id}
+                          className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition duration-150"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <h3 className="font-bold text-gray-900">{task.title}</h3>
+                                {task.isBuiltIn && (
+                                  <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">
+                                    Built-in
+                                  </span>
+                                )}
+                                <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
+                                  {task.category}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600 mt-1">{task.description}</p>
+                            </div>
+                            <div className="flex items-center gap-2 ml-4">
+                              <button
+                                onClick={() => handleUseTaskFromList(task)}
+                                className="px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"
+                                title="Use this task"
+                              >
+                                <i className="fas fa-plus mr-1"></i> Use
+                              </button>
+                              <button
+                                onClick={() => handleRemoveFromUserTaskList(task._id)}
+                                className="px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium"
+                                title="Remove from list"
+                              >
+                                <i className="fas fa-trash"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
                 </>
               )}
 
