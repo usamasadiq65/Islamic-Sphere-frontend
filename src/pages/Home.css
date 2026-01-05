@@ -2373,23 +2373,39 @@ h3 {
 }
 
 /* ========================================
-   HOW IT WORKS SECTION
+   HOW IT WORKS SECTION - EXPANDED
    ======================================== */
 .how-it-works-section {
-  padding: 6rem 0;
+  padding: 8rem 0 9rem;
   background: linear-gradient(135deg, #033642, #044555);
+  position: relative;
+}
+
+.how-it-works-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(224, 195, 62, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(224, 195, 62, 0.06) 0%, transparent 40%);
+  pointer-events: none;
 }
 
 .how-header {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .how-title {
-  font-size: 2.8rem;
+  font-size: 3.2rem;
   font-weight: 800;
   color: white;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .how-title span {
@@ -2397,10 +2413,11 @@ h3 {
 }
 
 .how-subtitle {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.8);
-  max-width: 600px;
+  max-width: 650px;
   margin: 0 auto;
+  line-height: 1.7;
 }
 
 .how-steps {
@@ -2408,79 +2425,129 @@ h3 {
   justify-content: center;
   gap: 2rem;
   position: relative;
+  z-index: 1;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* Connecting line behind cards */
+.how-steps::before {
+  content: '';
+  position: absolute;
+  top: 80px;
+  left: 15%;
+  right: 15%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(224, 195, 62, 0.4), rgba(224, 195, 62, 0.6), rgba(224, 195, 62, 0.4), transparent);
+  z-index: 0;
+  border-radius: 2px;
 }
 
 .how-step {
   flex: 1;
-  max-width: 350px;
+  max-width: 400px;
   position: relative;
   text-align: center;
 }
 
 .step-number {
-  font-size: 4rem;
-  font-weight: 800;
-  color: rgba(224, 195, 62, 0.2);
+  font-size: 5rem;
+  font-weight: 900;
+  color: rgba(224, 195, 62, 0.15);
   position: absolute;
-  top: -20px;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 0;
+  line-height: 1;
 }
 
 .step-content {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 3rem 2rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(224, 195, 62, 0.2);
+  border-radius: 24px;
+  padding: 4rem 2.5rem 3rem;
   position: relative;
   z-index: 1;
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-content::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 20%;
+  right: 20%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #e0c33e, transparent);
+  border-radius: 2px;
 }
 
 .step-content:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-10px);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.05));
+  transform: translateY(-15px);
+  border-color: rgba(224, 195, 62, 0.4);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
 }
 
 .step-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 1.5rem;
-  background: linear-gradient(135deg, #e0c33e, #d4b82f);
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 2rem;
+  background: linear-gradient(135deg, #e0c33e, #c9a82a);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 10px 30px rgba(224, 195, 62, 0.3);
+  position: relative;
+}
+
+.step-icon::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px dashed rgba(224, 195, 62, 0.3);
+  animation: spin 20s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .step-icon i {
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: #033642;
 }
 
 .step-content h3 {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: white;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .step-content p {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
-  line-height: 1.6;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.7;
+  flex-grow: 1;
 }
 
 .step-connector {
-  position: absolute;
-  top: 50%;
-  right: -1rem;
-  width: 2rem;
-  height: 2px;
-  background: linear-gradient(90deg, #e0c33e, transparent);
-  z-index: 2;
+  display: none;
 }
 
 .how-step:last-child .step-connector {
@@ -2504,13 +2571,14 @@ h3 {
 }
 
 /* ========================================
-   TESTIMONIALS SECTION - REDESIGNED
+   TESTIMONIALS SECTION - EXPANDED
    ======================================== */
 .testimonials-section {
   position: relative;
-  padding: 5rem 0 !important;
+  padding: 8rem 0 3rem !important;
   background: linear-gradient(135deg, #033642, #022530, #044555) !important;
   overflow: hidden;
+  margin-bottom: 0 !important;
 }
 
 .testimonials-section::before {
@@ -2533,16 +2601,16 @@ h3 {
 
 .testimonials-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4.5rem;
   position: relative;
   z-index: 1;
 }
 
 .testimonials-title {
-  font-size: 2.5rem;
+  font-size: 3.2rem;
   font-weight: 800;
   color: #fff !important;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .testimonials-title span {
@@ -2706,8 +2774,10 @@ h3 {
    FAQ SECTION / RECALL AI SECTION
    ======================================== */
 .faq-section {
-  padding: 6rem 0;
+  padding: 5rem 0 6rem;
   background: linear-gradient(135deg, #033642, #022530, #044555) !important;
+  margin: 0;
+  position: relative;
 }
 
 .faq-header {
@@ -2793,12 +2863,12 @@ h3 {
 }
 
 /* ========================================
-   FINAL CTA SECTION - REDESIGNED
+   FINAL CTA SECTION - REDESIGNED (WHITE BG)
    ======================================== */
 .final-cta-section {
   position: relative;
-  padding: 7rem 0 6rem;
-  background: linear-gradient(160deg, #022530, #033642, #044555);
+  padding: 10rem 0 11rem;
+  background: linear-gradient(180deg, #ffffff, #f8f9fa, #f0f4f6);
   overflow: hidden;
 }
 
@@ -2817,16 +2887,16 @@ h3 {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e0c33e' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23033642' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 .final-cta-background .cta-glow {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 80%;
-  height: 80%;
-  background: radial-gradient(circle, rgba(224, 195, 62, 0.12) 0%, transparent 60%);
+  width: 90%;
+  height: 90%;
+  background: radial-gradient(circle, rgba(3, 54, 66, 0.05) 0%, transparent 60%);
   transform: translate(-50%, -50%);
 }
 
@@ -2835,37 +2905,41 @@ h3 {
 .final-cta-section::after {
   content: '';
   position: absolute;
-  width: 300px;
-  height: 300px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(224, 195, 62, 0.08) 0%, transparent 70%);
   z-index: 0;
 }
 
 .final-cta-section::before {
-  top: -100px;
-  left: -100px;
+  width: 400px;
+  height: 400px;
+  top: -150px;
+  left: -150px;
+  background: radial-gradient(circle, rgba(224, 195, 62, 0.12) 0%, transparent 70%);
 }
 
 .final-cta-section::after {
-  bottom: -100px;
-  right: -100px;
+  width: 500px;
+  height: 500px;
+  bottom: -200px;
+  right: -150px;
+  background: radial-gradient(circle, rgba(3, 54, 66, 0.08) 0%, transparent 70%);
 }
 
 .final-cta-content {
   text-align: center;
   position: relative;
   z-index: 1;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .final-cta-content h2 {
-  font-size: 3.2rem;
+  font-size: 3.8rem;
   font-weight: 800;
-  color: white;
-  margin-bottom: 1.25rem;
-  line-height: 1.2;
+  color: #033642;
+  margin-bottom: 1.75rem;
+  line-height: 1.15;
 }
 
 .final-cta-content h2 span {
@@ -2876,46 +2950,46 @@ h3 {
 .final-cta-content h2 span::after {
   content: '';
   position: absolute;
-  bottom: 5px;
+  bottom: 8px;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, rgba(224, 195, 62, 0.5), transparent);
-  border-radius: 2px;
+  height: 6px;
+  background: linear-gradient(90deg, transparent, rgba(224, 195, 62, 0.6), transparent);
+  border-radius: 3px;
 }
 
 .final-cta-content>p {
-  font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.85);
-  max-width: 650px;
-  margin: 0 auto 3rem;
-  line-height: 1.6;
+  font-size: 1.4rem;
+  color: #5a6a72;
+  max-width: 700px;
+  margin: 0 auto 4rem;
+  line-height: 1.7;
 }
 
 .final-cta-buttons {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
-  margin-bottom: 3.5rem;
+  gap: 2rem;
+  margin-bottom: 5rem;
 }
 
 .cta-primary-btn,
 .cta-secondary-btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 1.15rem 2.75rem;
-  border-radius: 50px;
-  font-size: 1.15rem;
-  font-weight: 600;
+  gap: 0.9rem;
+  padding: 1.35rem 3.25rem;
+  border-radius: 60px;
+  font-size: 1.2rem;
+  font-weight: 700;
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .cta-primary-btn {
-  background: linear-gradient(135deg, #e0c33e, #c9a82a);
-  color: #033642;
-  box-shadow: 0 10px 35px rgba(224, 195, 62, 0.35);
+  background: linear-gradient(135deg, #033642, #044555);
+  color: white;
+  box-shadow: 0 12px 40px rgba(3, 54, 66, 0.35);
   position: relative;
   overflow: hidden;
 }
@@ -2927,7 +3001,7 @@ h3 {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s ease;
 }
 
@@ -2936,71 +3010,80 @@ h3 {
 }
 
 .cta-primary-btn:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 18px 45px rgba(224, 195, 62, 0.45);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 22px 55px rgba(3, 54, 66, 0.45);
 }
 
 .cta-secondary-btn {
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(5px);
+  background: white;
+  color: #033642;
+  border: 3px solid #033642;
+  box-shadow: 0 8px 25px rgba(3, 54, 66, 0.08);
 }
 
 .cta-secondary-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(224, 195, 62, 0.5);
-  transform: translateY(-6px);
+  background: #f8f9fa;
+  border-color: #e0c33e;
+  color: #033642;
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(224, 195, 62, 0.2);
 }
 
 .cta-trust-badges {
   display: flex;
   justify-content: center;
-  gap: 3.5rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 4rem;
+  padding-top: 3rem;
+  border-top: 2px solid rgba(3, 54, 66, 0.08);
 }
 
 .trust-badge {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.95rem;
-  font-weight: 500;
+  gap: 0.75rem;
+  color: #5a6a72;
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
 .trust-badge i {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   color: #e0c33e;
-  filter: drop-shadow(0 0 5px rgba(224, 195, 62, 0.3));
+  filter: drop-shadow(0 2px 4px rgba(224, 195, 62, 0.3));
 }
 
 @media (max-width: 768px) {
   .final-cta-section {
-    padding: 5rem 0 4rem;
+    padding: 7rem 0 8rem;
   }
 
   .final-cta-content h2 {
-    font-size: 2.2rem;
+    font-size: 2.6rem;
+  }
+
+  .final-cta-content>p {
+    font-size: 1.15rem;
+    margin-bottom: 3rem;
   }
 
   .final-cta-buttons {
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
+    margin-bottom: 3.5rem;
   }
 
   .cta-primary-btn,
   .cta-secondary-btn {
     width: 100%;
-    max-width: 280px;
+    max-width: 320px;
     justify-content: center;
+    padding: 1.2rem 2.5rem;
   }
 
   .cta-trust-badges {
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
     align-items: center;
   }
 }
@@ -3012,6 +3095,7 @@ h3 {
   background: linear-gradient(135deg, #033642, #022530, #044555) !important;
   position: relative;
   overflow: hidden;
+  margin-top: 0 !important;
 }
 
 .recall-section::before {
