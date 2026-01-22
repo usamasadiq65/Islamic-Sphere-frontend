@@ -483,7 +483,7 @@ const Home = () => {
                   <i className="fas fa-user-plus"></i>
                 </div>
                 <h3>Create Your Account</h3>
-                <p>Sign up for free and create your personal profile to start your journey</p>
+                <p>Sign up for free and create personal profile to start your journey</p>
               </div>
               <div className="step-connector"></div>
             </div>
